@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  postgres_server:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=odoo
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      odoo_network_compta:
+        ipv4_address: 172.28.0.2
+
+  odoo_server_compta:
+    image: odoo:14
+    environment:
+      - HOST=172.28.0.2
+      - USER=odoo
+      - PASSWORD=odoo
+    ports:
+      - "8070:8069"
+    networks:
+      odoo_network_compta:
+        ipv4_address: 172.28.0.3
+    volumes:
+      - odoo_server:/var/lib/odoo
+      - "C:/Stages/odoo14_docker/custom-addons:/mnt/extra-addons"
+
+networks:
+  odoo_network_compta:
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+volumes:
+  postgres_data:
+  odoo_server:
