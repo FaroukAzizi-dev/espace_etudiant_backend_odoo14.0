@@ -28,7 +28,7 @@ services:
         ipv4_address: 172.28.0.3
     volumes:
       - odoo_server:/var/lib/odoo
-      - "C:/Stages/odoo14_docker/custom-addons:/mnt/extra-addons"
+      - "C:/Stages/espace_etudiant_backend_odoo14.0/custom-addons:/mnt/extra-addons"
 
 networks:
   odoo_network_compta:

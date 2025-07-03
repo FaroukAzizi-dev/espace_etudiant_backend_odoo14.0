@@ -4,7 +4,7 @@ class Reclamation(models.Model):
     _name = 'student.reclamation'
     _description = 'Réclamation Étudiant'
 
-    etudiant_id = fields.Many2one('student.etudiant')
+    etudiant_id = fields.Many2one('student.etudiant', string="Étudiant")
     admin_id = fields.Many2one('student.admin')
     titre = fields.Char()
     description = fields.Text()

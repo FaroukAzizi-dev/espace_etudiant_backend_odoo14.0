@@ -11,5 +11,5 @@ class Enseignant(models.Model):
     date_recrutement = fields.Date()
     note_ids = fields.One2many('student.note', 'enseignant_id')
     absence_ids = fields.One2many('student.absence', 'enseignant_id')
-    reclamation_ids = fields.One2many('student.reclamation_enseignant', 'enseignant_id')
+    reclamation_ids = fields.One2many('student.reclamation_prof', 'enseignant_id')
     matieres_ids = fields.One2many('student.matiere', 'enseignant_id')

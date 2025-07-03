@@ -12,4 +12,4 @@ class Etudiant(models.Model):
     document_ids = fields.One2many('student.document', 'etudiant_id')
     absence_ids = fields.One2many('student.absence', 'etudiant_id')
     note_ids = fields.One2many('student.note', 'etudiant_id')
-    reclamation_ids = fields.One2many('student.reclamation_etudiant', 'etudiant_id')
+    reclamation_ids = fields.One2many('student.reclamation', 'etudiant_id')

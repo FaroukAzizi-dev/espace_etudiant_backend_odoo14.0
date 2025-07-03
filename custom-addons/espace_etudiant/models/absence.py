@@ -4,7 +4,7 @@ class Absence(models.Model):
     _name = 'student.absence'
     _description = 'Absence'
 
-    etudiant_id = fields.Many2one('student.etudiant')
+    etudiant_id = fields.Many2one('student.etudiant', string="Étudiant")
     enseignant_id = fields.Many2one('student.enseignant')
     heure_debut = fields.Datetime()
     heure_fin = fields.Datetime()

@@ -6,7 +6,7 @@ class Note(models.Model):
 
     enseignant_id = fields.Many2one('student.enseignant')
     matiere_id = fields.Many2one('student.matiere')
-    etudiant_id = fields.Many2one('student.etudiant')
+    etudiant_id = fields.Many2one('student.etudiant', string="Étudiant")
     valeur = fields.Float()
     pourcentage = fields.Float()
     type = fields.Selection([
