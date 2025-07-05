@@ -13,8 +13,10 @@
     'category': 'Education',
     'depends': [],
     'data': [
+        'views/classe_action.xml',
         'views/student_menu.xml',
         'views/student_action.xml'
+
     ],
     'installable': True,
     'auto_install': False,

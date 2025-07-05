@@ -9,6 +9,13 @@ class Enseignant(models.Model):
     departement = fields.Char()
     specialite = fields.Char()
     date_recrutement = fields.Date()
+    classe_ids = fields.Many2many(
+    'student.classe',              # vers quel modèle on fait la relation
+    'enseignant_classe_rel',       # nom de la table relationnelle
+    'enseignant_id',               # colonne qui pointe vers l’enseignant
+    'classe_id',                   # colonne qui pointe vers la classe
+    string="Classes"
+    )
     note_ids = fields.One2many('student.note', 'enseignant_id')
     absence_ids = fields.One2many('student.absence', 'enseignant_id')
     reclamation_ids = fields.One2many('student.reclamation_prof', 'enseignant_id')

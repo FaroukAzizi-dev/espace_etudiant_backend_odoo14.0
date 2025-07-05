@@ -8,4 +8,12 @@ class Classe(models.Model):
     filiere = fields.Char()
     niveau = fields.Char()
     edt_id = fields.Many2one('student.edt', string="Emploi du temps")
+    enseignant_ids = fields.Many2many(
+    'student.enseignant',
+    'enseignant_classe_rel',
+    'classe_id',
+    'enseignant_id',
+    string="Enseignants"
+    )
+
     
