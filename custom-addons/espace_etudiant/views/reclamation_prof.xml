@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Vue Formulaire - Enseignant -->
+    <record id="view_student_reclamation_prof_form" model="ir.ui.view">
+        <field name="name">student.reclamation_prof.form</field>
+        <field name="model">student.reclamation_prof</field>
+        <field name="arch" type="xml">
+            <form string="Réclamation Enseignant">
+                <sheet>
+                    <group>
+                        <field name="enseignant_id" required="1"/>
+                        <field name="type_reclamation" required="1"/>
+                        <field name="titre" required="1"/>
+                        <field name="description" widget="text" required="1"/>
+                        <field name="date_creation" readonly="1"/>
+                        <field name="etat" readonly="1"/>
+                        <field name="reponse_admin" widget="text" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue Liste - Enseignant -->
+    <record id="view_student_reclamation_prof_tree" model="ir.ui.view">
+        <field name="name">student.reclamation_prof.tree</field>
+        <field name="model">student.reclamation_prof</field>
+        <field name="arch" type="xml">
+            <tree string="Mes Réclamations">
+                <field name="enseignant_id"/>
+                <field name="type_reclamation"/>
+                <field name="titre"/>
+                <field name="date_creation"/>
+                <field name="etat"/>
+            </tree>
+        </field>
+    </record>
+
+   <record id="action_student_reclamation_prof" model="ir.actions.act_window">
+    <field name="name">Réclamations Enseignants</field>
+    <field name="res_model">student.reclamation_prof</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[('enseignant_id.user_id.id', '=', uid)]</field>
+    <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('view_student_reclamation_prof_tree')}),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('view_student_reclamation_prof_form')})]"/>
+</record>
+
+</odoo>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Form view -->
+    <record id="view_student_form" model="ir.ui.view">
+        <field name="name">student.etudiant.form</field>
+        <field name="model">student.etudiant</field>
+        <field name="arch" type="xml">
+            <form string="Étudiant">
+                <sheet>
+                    <group>
+                        <field name="partner_id" options="{'no_create': True}"/>
+                        <field name="user_id" options="{'no_create': True}"/>
+                        <field name="matricule" readonly="1"/>
+                        <field name="date_inscription"/>
+                        <field name="statut"/>
+                    </group>
+                    <group>
+                        <field name="nb_credits"/>
+                        <field name="moyenne"/>
+                        <field name="rang"/>
+                        <field name="classe_id"/>
+                        <field name="category_id"/>
+                    </group>
+                    <group string="Informations personnelles">
+                        <field name="birth_date"/>
+                        <field name="gender"/>
+                        <field name="blood_group"/>
+                        <field name="nationality_id"/>
+                        <field name="adresse_domicile"/>
+                        <field name="telephone"/>
+                        <field name="email_personnel"/>
+                    </group>
+                    <group string="Contact d'urgence">
+                        <field name="emergency_contact_name"/>
+                        <field name="emergency_contact_phone"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree (list) view -->
+    <record id="view_student_tree" model="ir.ui.view">
+        <field name="name">student.etudiant.tree</field>
+        <field name="model">student.etudiant</field>
+        <field name="arch" type="xml">
+            <tree string="Étudiants">
+                <field name="matricule"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="nb_credits"/>
+                <field name="moyenne"/>
+                <field name="rang"/>
+                <field name="classe_id"/>
+                <field name="statut"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action window -->
+    <record id="action_student_etudiant" model="ir.actions.act_window">
+        <field name="name">Étudiants</field>
+        <field name="res_model">student.etudiant</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_student_tree"/>
+    </record>
+
+</odoo>

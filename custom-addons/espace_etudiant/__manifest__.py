@@ -12,7 +12,15 @@
     'website': 'https://example.com',
     'category': 'Education',
     'depends': [],
-    'data': [],
+    'data': [
+        'views/enseignant.xml',
+        'views/student_etudiant_views.xml',
+        'views/matiere_views.xml',
+        'views/reclamation_prof.xml',
+        'views/admin_reclamation.xml',
+        'views/menus.xml',
+              
+          ],
     'installable': True,
     'auto_install': False,
     'application': True,

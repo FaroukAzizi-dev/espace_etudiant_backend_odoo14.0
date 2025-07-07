@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Vue formulaire Admin pour traiter les réclamations -->
+    <record id="view_student_reclamation_admin_form" model="ir.ui.view">
+        <field name="name">student.reclamation_prof.admin.form</field>
+        <field name="model">student.reclamation_prof</field>
+        <field name="arch" type="xml">
+            <form string="Traitement Réclamation - Admin">
+                <sheet>
+                    <group string="Détails de la réclamation">
+                        <field name="enseignant_id" readonly="1"/>
+                        <field name="type_reclamation" readonly="1"/>
+                        <field name="titre" readonly="1"/>
+                        <field name="description" readonly="1" widget="text"/>
+                        <field name="date_creation" readonly="1"/>
+                    </group>
+                    <group string="Traitement par l'administration">
+                        <field name="etat"/>
+                        <field name="reponse_admin" placeholder="Réponse de l'administration..." widget="text"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue liste Admin pour voir toutes les réclamations -->
+    <record id="view_student_reclamation_admin_tree" model="ir.ui.view">
+        <field name="name">student.reclamation_prof.admin.tree</field>
+        <field name="model">student.reclamation_prof</field>
+        <field name="arch" type="xml">
+            <tree string="Toutes les Réclamations" decoration-info="etat=='en_attente'" decoration-success="etat=='traitee'">
+                <field name="enseignant_id"/>
+                <field name="type_reclamation"/>
+                <field name="titre"/>
+                <field name="date_creation"/>
+                <field name="etat"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action pour l'admin -->
+    <record id="action_student_reclamation_admin" model="ir.actions.act_window">
+        <field name="name">Traitement des Réclamations</field>
+        <field name="res_model">student.reclamation_prof</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                                     (0, 0, {'view_mode': 'tree', 'view_id': ref('view_student_reclamation_admin_tree')}),
+                                     (0, 0, {'view_mode': 'form', 'view_id': ref('view_student_reclamation_admin_form')})]"/>
+    </record>
+</odoo>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Menu principal -->
+    <menuitem id="menu_student_portal_root" 
+              name="Student Portal"
+              sequence="10"/>
+
+    <!-- Menu Étudiant -->
+    <menuitem id="menu_student_etudiant"
+              name="Étudiants"
+              parent="menu_student_portal_root"
+              action="espace_etudiant.action_student_etudiant"
+              sequence="10"/>
+
+    <!-- Menu Enseignant -->
+    <menuitem id="menu_student_enseignant"
+              name="Enseignants"
+              parent="menu_student_portal_root"
+              action="espace_etudiant.action_student_enseignant"
+              sequence="20"/>
+
+    <!-- Menu Matières -->
+    <menuitem id="menu_student_matiere"
+              name="Matières"
+              parent="menu_student_portal_root"
+              action="espace_etudiant.action_student_matiere"
+              sequence="30"/>
+              
+      <!-- Menu Réclamations Enseignants - Maintenant au niveau principal -->
+    <menuitem id="menu_student_reclamation_prof"
+              name="Réclamation enseignant"
+              parent="menu_student_portal_root"
+              action="action_student_reclamation_prof"
+              sequence="40"/>
+               <!-- Menu Admin -->
+    <menuitem id="menu_student_reclamation_admin"
+              name="Traitement Réclamations"
+              parent="menu_student_portal_root"
+              action="action_student_reclamation_admin"
+              sequence="50"/>
+
+</odoo>
