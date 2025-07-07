@@ -9,3 +9,6 @@ from . import reclamation
 from . import reclamation_prof
 from . import document
 from . import matiere
+from . import programme
+from . import filiere
+from . import niveau

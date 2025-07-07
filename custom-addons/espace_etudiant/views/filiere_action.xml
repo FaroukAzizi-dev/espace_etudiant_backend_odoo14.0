@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Vues Filière -->
+    <record id="view_filiere_form" model="ir.ui.view">
+        <field name="name">student.filiere.form</field>
+        <field name="model">student.filiere</field>
+        <field name="arch" type="xml">
+            <form string="Filière">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="programme_id"/>
+                        <field name="niveau_ids"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_filiere_tree" model="ir.ui.view">
+        <field name="name">student.filiere.tree</field>
+        <field name="model">student.filiere</field>
+        <field name="arch" type="xml">
+            <tree string="Filière">
+                <field name="name"/>
+                <field name="programme_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action Filière -->
+    <record id="action_student_filiere" model="ir.actions.act_window">
+        <field name="name">Filières</field>
+        <field name="res_model">student.filiere</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+</odoo>

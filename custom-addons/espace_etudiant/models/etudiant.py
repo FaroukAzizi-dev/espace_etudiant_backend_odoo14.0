@@ -8,7 +8,8 @@ class Student(models.Model):
 
     partner_id = fields.Many2one('res.partner', required=True, ondelete='cascade')
     user_id = fields.Many2one('res.users', string="Utilisateur lié")
-    cin = fields.Integer(string="CIN", required=True, unique=True)
+    cin = fields.Char(string="CIN", required=True)
+
     first_name = fields.Char('First Name', size=128, translate=True)
     last_name = fields.Char('Last Name', size=128, translate=True)
     birth_date = fields.Date(string="Date de naissance")
@@ -35,11 +36,20 @@ class Student(models.Model):
         ('dropout', 'Abandonné')
     ], string="Statut", default='active')
     
+    programme_id = fields.Many2one('student.programme', string="Programme")
+    filiere_id = fields.Many2one('student.filiere', string="Filière")
+    niveau_id = fields.Many2one('student.niveau', string="Niveau")
+
+    
     # Documents et relations
     document_ids = fields.One2many('student.document', 'etudiant_id', string="Documents")
     absence_ids = fields.One2many('student.absence', 'etudiant_id', string="Absences")
     note_ids = fields.One2many('student.note', 'etudiant_id', string="Notes")
     reclamation_ids = fields.One2many('student.reclamation', 'etudiant_id', string="Réclamations")
+    
+    # Academic records
+    academic_record_ids = fields.One2many('student.academic.record', 'etudiant_id', string="Historique académique")
+
 
     active = fields.Boolean(default=True)
 
@@ -79,3 +89,46 @@ class Student(models.Model):
             if student.partner_id:
                 student.partner_id.unlink()
         return super().unlink()
+    
+    @api.onchange('programme_id')
+    def _onchange_programme_id(self):
+        # Quand on change de programme, on vide la filière et le niveau
+        self.filiere_id = False
+        self.niveau_id = False
+
+    @api.onchange('filiere_id')
+    def _onchange_filiere_id(self):
+        # Quand on change de filière, on vide le niveau
+        self.niveau_id = False
+
+
+
+class AcademicRecord(models.Model):
+    _name = 'student.academic.record'
+    _description = "Fiche académique annuelle"
+
+    etudiant_id = fields.Many2one('student.etudiant', string="Étudiant", required=True, ondelete="cascade")
+    annee = fields.Char(string="Année universitaire", required=True)
+    moyenne = fields.Float(string="Moyenne", digits=(4, 2))
+    nombre_credits = fields.Integer(string="Nombre de crédits")
+    rang = fields.Integer(string="Rang")
+
+    # Champ lié stocké pour date d'inscription
+    date_inscription = fields.Date(related='etudiant_id.date_inscription', store=True, string="Date d'inscription Étudiant")
+
+    classe = fields.Char(string="Année universitaire liée", compute="_compute_classe", store=True)
+
+    programme_id = fields.Many2one('student.programme', string="Programme")
+    filiere_id = fields.Many2one('student.filiere', string="Filière")
+    niveau_id = fields.Many2one('student.niveau', string="Niveau")
+
+    @api.depends('date_inscription')
+    def _compute_classe(self):
+        for record in self:
+            if record.date_inscription:
+                year = record.date_inscription.year
+                record.classe = f"{year}/{year + 1}"
+            else:
+                record.classe = "N/A"
+
+

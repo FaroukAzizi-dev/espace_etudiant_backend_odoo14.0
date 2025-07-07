@@ -12,12 +12,15 @@
     'website': 'https://example.com',
     'category': 'Education',
     'depends': [],
-    'data': [
+    'data': [ 
         'views/classe_action.xml',
-        'views/student_menu.xml',
-        'views/student_action.xml'
-
+        'views/programme_action.xml',    # Charger les actions avant les menus
+        'views/filiere_action.xml',
+        'views/niveau_action.xml',
+        'views/student_action.xml',
+        'views/student_menu.xml'  
     ],
+
     'installable': True,
     'auto_install': False,
     'application': True,

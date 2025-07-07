@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Vues Niveau -->
+    <record id="view_niveau_form" model="ir.ui.view">
+        <field name="name">student.niveau.form</field>
+        <field name="model">student.niveau</field>
+        <field name="arch" type="xml">
+            <form string="Niveau">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="filiere_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_niveau_tree" model="ir.ui.view">
+        <field name="name">student.niveau.tree</field>
+        <field name="model">student.niveau</field>
+        <field name="arch" type="xml">
+            <tree string="Niveau">
+                <field name="name"/>
+                <field name="filiere_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action Niveau -->
+    <record id="action_student_niveau" model="ir.actions.act_window">
+        <field name="name">Niveaux</field>
+        <field name="res_model">student.niveau</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+</odoo>
