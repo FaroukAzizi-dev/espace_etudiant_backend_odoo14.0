@@ -5,15 +5,16 @@ class Classe(models.Model):
     _description = 'Classe'
 
     name = fields.Char()
-    filiere = fields.Char()
-    niveau = fields.Char()
+    filiere_id = fields.Many2one('student.filiere', string="Filière")
+    niveau_id = fields.Many2one('student.niveau', string="Niveau")
     edt_id = fields.Many2one('student.edt', string="Emploi du temps")
     enseignant_ids = fields.Many2many(
-    'student.enseignant',
-    'enseignant_classe_rel',
-    'classe_id',
-    'enseignant_id',
-    string="Enseignants"
+        'student.enseignant',
+        'enseignant_classe_rel',
+        'classe_id',
+        'enseignant_id',
+        string="Enseignants"
     )
+
 
     

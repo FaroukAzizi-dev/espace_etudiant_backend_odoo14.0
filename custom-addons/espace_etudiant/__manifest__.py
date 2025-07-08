@@ -12,14 +12,22 @@
     'website': 'https://example.com',
     'category': 'Education',
     'depends': [],
-    'data': [ 
-        'views/classe_action.xml',
-        'views/programme_action.xml',    # Charger les actions avant les menus
-        'views/filiere_action.xml',
-        'views/niveau_action.xml',
-        'views/student_action.xml',
-        'views/student_menu.xml'  
+    'data': [
+    # 1. Charger d'abord les dépendances (modèles nécessaires)
+    'views/programme_action.xml',
+    'views/filiere_action.xml',
+    'views/niveau_action.xml',
+    'views/enseignant.xml',
+
+    # 2. Ensuite les vues qui en dépendent
+    'views/classe_action.xml',
+    'views/matiere_views.xml',
+    'views/student_action.xml',
+
+    # 3. Enfin le menu
+    'views/student_menu.xml',
     ],
+
 
     'installable': True,
     'auto_install': False,
