@@ -46,6 +46,25 @@
                                 </tree>
                             </field>
                         </page>
+                        <page string="Mes Réclamations">
+    <field name="reclamation_prof_ids" context="{'default_enseignant_id': active_id}">
+        <tree editable="bottom">
+            <field name="type_reclamation"/>
+            <field name="titre"/>
+            <field name="etat"/>
+            <field name="date_creation"/>
+        </tree>
+        <form>
+            <group>
+                <field name="type_reclamation" required="1"/>
+                <field name="titre" required="1"/>
+                <field name="description" widget="text" required="1"/>
+                <field name="etat" readonly="1"/>
+                <field name="reponse_admin" widget="text" readonly="1"/>
+            </group>
+        </form>
+    </field>
+</page>
                     </notebook>
                 </sheet>
             </form>

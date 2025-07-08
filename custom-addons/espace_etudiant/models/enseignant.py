@@ -31,7 +31,7 @@ class Enseignant(models.Model):
     # Relations
     note_ids = fields.One2many('student.note', 'enseignant_id', string="Notes")
     absence_ids = fields.One2many('student.absence', 'enseignant_id', string="Absences")
-    reclamation_ids = fields.One2many('student.reclamation_prof', 'enseignant_id', string="Réclamations")
+    reclamation_prof_ids = fields.One2many('student.reclamation_prof', 'enseignant_id', string="Réclamations")
     matiere_ids = fields.Many2many(
     'student.matiere',
     'matiere_enseignant_rel',  # table relationnelle
