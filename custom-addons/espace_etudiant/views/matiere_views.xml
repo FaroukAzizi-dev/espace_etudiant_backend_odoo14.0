@@ -36,7 +36,7 @@
                         <field name="evaluation_type_ids">
                             <tree editable="bottom">
                                 <field name="type" />
-                                <field name="coefficient" />
+                                <field name="pourcentage" />
                             </tree>
                         </field>
 
@@ -58,6 +58,7 @@
                 <field name="semestre" />
                 <field name="volume_horaire" />
                 <field name="coefficient" />
+                <field name="evaluation_summary" string="Évaluations" />
                 <field name="enseignant_ids" widget="many2many_tags" />
                 <field name="enseignant_id" />
                 <field name="classe_id" />

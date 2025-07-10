@@ -130,6 +130,7 @@
 
                         <page name="academic_information" string="Informations académiques">
                             <group>
+                                <field name="identifiant" String="Identifiant" required="1"></field>
                                 <field name="classe_id" string="Classe" />
                                 <field name="programme_id" string="Programme" />
                                 <field name="filiere_id"
@@ -150,6 +151,18 @@
                                 </tree>
                             </field>
                         </page>
+                        <page name="student_notes" string="Relevés de Notes">
+                            <field name="note_ids">
+                                <tree string="Notes par matière" editable="bottom">
+                                    <field name="matiere_id" />
+                                    <field name="note_cc" />
+                                    <field name="note_tp" />
+                                    <field name="note_examen" />
+                                    <field name="moyenne_generale" string="Moyenne Matière"
+                                        readonly="1" />
+                                </tree>
+                            </field>
+                        </page>
 
                     </notebook>
                 </sheet>
@@ -166,6 +179,7 @@
             <tree string="Étudiants">
                 <field name="first_name" />
                 <field name="last_name" />
+                <field name="identifiant"></field>
                 <field name="user_id" />
                 <field name="nb_credits" />
                 <field name="moyenne" />

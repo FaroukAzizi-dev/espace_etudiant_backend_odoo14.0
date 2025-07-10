@@ -1,52 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Form view for Note -->
     <record id="view_note_form" model="ir.ui.view">
         <field name="name">student.note.form</field>
         <field name="model">student.note</field>
         <field name="arch" type="xml">
-            <form string="Note">
+            <form string="Relevé de Notes">
                 <sheet>
+                    <h1><field name="display_name" readonly="1"/></h1>
                     <group>
-                        <field name="etudiant_id" required="1"/>
-                        <field name="matiere_id" required="1"/>
-                        <field name="enseignant_id"/>
+                        <group string="Saisie Rapide">
+                            <field name="etudiant_identifiant" placeholder="Saisir l'identifiant étudiant..."/>
+                            <field name="matiere_code" placeholder="Saisir le code matière..."/>
+                        </group>
+                        <group string="Informations">
+                            <field name="etudiant_nom"/>
+                            <field name="matiere_nom"/>
+                            <field name="enseignant_nom"/>
+                        </group>
                     </group>
+
+                    <div class="alert alert-info" role="alert" attrs="{'invisible': [('matiere_id', '!=', False)]}">
+                        <strong>Veuillez sélectionner une matière</strong> pour afficher les champs de notation.
+                    </div>
+                    
+                    <group string="Saisie des Notes" attrs="{'invisible': [('matiere_id', '=', False)]}">
+                        <field name="note_cc" attrs="{'invisible': [('has_cc_eval', '=', False)]}"/>
+                        <field name="note_tp" attrs="{'invisible': [('has_tp_eval', '=', False)]}"/>
+                        <field name="note_examen" attrs="{'invisible': [('has_examen_eval', '=', False)]}"/>
+                    </group>
+                    
                     <group>
-                        <field name="type" required="1" widget="selection"/>
-                        <field name="valeur"/>
-                        <field name="pourcentage" readonly="1"/>
+                        <group/>
+                        <group>
+                            <field name="moyenne_generale" widget="float" options="{'digits': [4, 2]}"/>
+                        </group>
                     </group>
+
+                    <field name="etudiant_id" invisible="1"/>
+                    <field name="matiere_id" invisible="1"/>
+                    <field name="has_cc_eval" invisible="1"/>
+                    <field name="has_tp_eval" invisible="1"/>
+                    <field name="has_examen_eval" invisible="1"/>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <!-- Tree (list) view for Note -->
     <record id="view_note_tree" model="ir.ui.view">
         <field name="name">student.note.tree</field>
         <field name="model">student.note</field>
         <field name="arch" type="xml">
-            <tree string="Notes">
-                <field name="etudiant_id"/>
-                <field name="matiere_id"/>
-                <field name="enseignant_id"/>
-                <field name="type"/>
-                <field name="valeur"/>
-                <field name="pourcentage"/>
+            <tree string="Relevés de Notes" default_order="etudiant_nom, matiere_nom">
+                <field name="etudiant_nom"/>
+                <field name="matiere_nom"/>
+                <field name="enseignant_nom"/>
+                <field name="moyenne_generale" string="Moyenne" widget="float" options="{'digits': [4, 2]}"/>
             </tree>
         </field>
     </record>
 
-    <!-- Action to open notes -->
+    <record id="view_note_search" model="ir.ui.view">
+        <field name="name">student.note.search</field>
+        <field name="model">student.note</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher des Notes">
+                <field name="etudiant_nom"/>
+                <field name="matiere_nom"/>
+                <field name="etudiant_identifiant"/>
+                <field name="matiere_code"/>
+                <separator/>
+                <filter name="group_by_etudiant" string="Par Étudiant" context="{'group_by': 'etudiant_id'}"/>
+                <filter name="group_by_matiere" string="Par Matière" context="{'group_by': 'matiere_id'}"/>
+            </search>
+        </field>
+    </record>
+
     <record id="action_student_notes" model="ir.actions.act_window">
         <field name="name">Notes</field>
         <field name="res_model">student.note</field>
         <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Créez vos notes ici.
-            </p>
-        </field>
+        <field name="search_view_id" ref="view_note_search"/>
     </record>
-
 </odoo>

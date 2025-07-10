@@ -43,6 +43,9 @@ class Matiere(models.Model):
         'matiere_id',
         string="Types d'évaluation"
     )
+    
+    
+    evaluation_summary = fields.Char(string="Évaluations", compute="_compute_evaluation_summary")
 
 
     @api.constrains('enseignant_ids')
@@ -59,6 +62,12 @@ class Matiere(models.Model):
             # Définir le premier enseignant comme principal s'il n'y en a pas
             if not self.enseignant_id or self.enseignant_id not in self.enseignant_ids:
                 self.enseignant_id = self.enseignant_ids[0]
+    def name_get(self):
+        result = []
+        for record in self:
+            name = f"[{record.code}] {record.name}"
+            result.append((record.id, name))
+        return result
 
     @api.onchange('enseignant_id')
     def _onchange_enseignant_id(self):
@@ -81,3 +90,12 @@ class Matiere(models.Model):
                 name = record.name
             result.append((record.id, name))
         return result
+
+    @api.depends('evaluation_type_ids.pourcentage', 'evaluation_type_ids.type')
+    def _compute_evaluation_summary(self):
+        type_labels = dict(self.env['student.evaluation.type'].fields_get(allfields=['type'])['type']['selection'])
+        for matiere in self:
+            matiere.evaluation_summary = ', '.join(
+                f"{type_labels.get(ev.type, ev.type)}: {ev.pourcentage:.0f}%"
+                for ev in matiere.evaluation_type_ids
+            )

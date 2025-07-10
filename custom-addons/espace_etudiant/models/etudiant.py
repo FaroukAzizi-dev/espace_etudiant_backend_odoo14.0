@@ -9,7 +9,7 @@ class Student(models.Model):
     partner_id = fields.Many2one('res.partner', required=True, ondelete='cascade')
     user_id = fields.Many2one('res.users', string="Utilisateur lié")
     cin = fields.Char(string="CIN", required=True)
-
+    identifiant = fields.Char(string="Identifiant", required=True, help="Identifiant unique de l'étudiant")
     first_name = fields.Char('First Name', size=128, translate=True)
     last_name = fields.Char('Last Name', size=128, translate=True)
     birth_date = fields.Date(string="Date de naissance")
@@ -100,6 +100,13 @@ class Student(models.Model):
     def _onchange_filiere_id(self):
         # Quand on change de filière, on vide le niveau
         self.niveau_id = False
+        
+    def name_get(self):
+        result = []
+        for record in self:
+            name = f"[{record.identifiant}] {record.name}"
+            result.append((record.id, name))
+        return result
 
 
 
