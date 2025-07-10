@@ -36,6 +36,14 @@ class Matiere(models.Model):
     
     classe_id = fields.Many2one('student.classe', string="Classe", required=True)
     active = fields.Boolean(string="Actif", default=True)
+    
+       # AJOUTE CE CHAMP :
+    evaluation_type_ids = fields.One2many(
+        'student.evaluation.type',
+        'matiere_id',
+        string="Types d'évaluation"
+    )
+
 
     @api.constrains('enseignant_ids')
     def _check_enseignants(self):

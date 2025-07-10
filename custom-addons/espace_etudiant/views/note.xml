@@ -1,0 +1,52 @@
+<odoo>
+    <!-- Form view for Note -->
+    <record id="view_note_form" model="ir.ui.view">
+        <field name="name">student.note.form</field>
+        <field name="model">student.note</field>
+        <field name="arch" type="xml">
+            <form string="Note">
+                <sheet>
+                    <group>
+                        <field name="etudiant_id" required="1"/>
+                        <field name="matiere_id" required="1"/>
+                        <field name="enseignant_id"/>
+                    </group>
+                    <group>
+                        <field name="type" required="1" widget="selection"/>
+                        <field name="valeur"/>
+                        <field name="pourcentage" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree (list) view for Note -->
+    <record id="view_note_tree" model="ir.ui.view">
+        <field name="name">student.note.tree</field>
+        <field name="model">student.note</field>
+        <field name="arch" type="xml">
+            <tree string="Notes">
+                <field name="etudiant_id"/>
+                <field name="matiere_id"/>
+                <field name="enseignant_id"/>
+                <field name="type"/>
+                <field name="valeur"/>
+                <field name="pourcentage"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action to open notes -->
+    <record id="action_student_notes" model="ir.actions.act_window">
+        <field name="name">Notes</field>
+        <field name="res_model">student.note</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez vos notes ici.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -11,20 +11,25 @@
     'author': 'Farouk Azizi , Said Laffet',
     'website': 'https://example.com',
     'category': 'Education',
-    'depends': [],
+    'depends': ['base' ,
+                'mail',
+                'website'],
     'data': [
-    # 1. Charger d'abord les dépendances (modèles nécessaires)
+    # Security first
+    'security/ir.model.access.csv',
+    
+    # Base models
     'views/programme_action.xml',
     'views/filiere_action.xml',
     'views/niveau_action.xml',
-    'views/enseignant.xml',
-
-    # 2. Ensuite les vues qui en dépendent
-    'views/classe_action.xml',
     'views/matiere_views.xml',
+    'views/note.xml',
+    # Dependent models
+    'views/enseignant.xml',
     'views/student_action.xml',
-
-    # 3. Enfin le menu
+    'views/classe_action.xml',
+    
+    # Menus last
     'views/student_menu.xml',
     ],
 
