@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- ===== Vue Formulaire Filière ===== -->
-    <record id="view_student_filiere_form" model="ir.ui.view">
+
+    <!-- Vues Filière -->
+    <record id="view_filiere_form" model="ir.ui.view">
+
         <field name="name">student.filiere.form</field>
         <field name="model">student.filiere</field>
         <field name="arch" type="xml">
             <form string="Filière">
                 <sheet>
                     <group>
-                        <field name="name" required="1"/>
-                        <field name="programme_id"/>
-                        <field name="niveau_ids"/>
+
+                        <field name="name" />
+
+                        <field name="programme_id" />
+                        <field name="niveau_ids" />
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <!-- ===== Vue Liste Filière ===== -->
-    <record id="view_student_filiere_tree" model="ir.ui.view">
+
+    <record id="view_filiere_tree" model="ir.ui.view">
         <field name="name">student.filiere.tree</field>
         <field name="model">student.filiere</field>
         <field name="arch" type="xml">
-            <tree string="Filières">
-                <field name="name"/>
-                <field name="programme_id"/>
+            <tree string="Filière">
+
+                <field name="name" />
+                <field name="programme_id" />
             </tree>
         </field>
     </record>
 
-    <!-- ===== Action pour afficher les filières ===== -->
+
     <record id="action_student_filiere" model="ir.actions.act_window">
         <field name="name">Filières</field>
         <field name="res_model">student.filiere</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_student_filiere_tree"/>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Créez votre première filière
-            </p>
-        </field>
     </record>
+
 
 </odoo>

@@ -8,63 +8,47 @@
             <form string="Enseignant">
                 <sheet>
                     <group>
-                        <field name="image_128" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
+                        <field name="image_128" widget="image" class="oe_avatar"
+                            options="{'preview_image': 'image_128'}" />
                     </group>
 
                     <notebook>
                         <page string="Informations personnelles">
                             <group string="Informations personnelles">
-                                <field name="nom" required="1"/>
-                                <field name="prenom" required="1"/>
-                                <field name="email" required="1" placeholder="exemple@domaine.com"/>
-                                <field name="identifiant" required="1" placeholder="ex: ****JMT****"/>
-                                <field name="cin" required="1" placeholder="CIN"/>
-                                <field name="date_naissance"/>
-                                <field name="telephone" readonly="0"/>
-                                <field name="adresse" readonly="0"/>
+                                <field name="nom" required="1" />
+                                <field name="prenom" required="1" />
+                                <field name="email" required="1" placeholder="exemple@domaine.com" />
+                                <field name="identifiant" required="1" placeholder="ex: ****JMT****" />
+                                <field name="cin" required="1" placeholder="CIN" />
+                                <field name="date_naissance" />
+                                <field name="telephone" readonly="0" />
+                                <field name="adresse" readonly="0" />
                             </group>
 
                             <group string="Compte utilisateur (généré automatiquement)" colspan="2">
-                                <field name="user_id" readonly="1" options="{'no_create': True}"/>
+                                <field name="user_id" readonly="1" options="{'no_create': True}" />
                             </group>
 
                             <group string="Informations professionnelles">
-                                <field name="grade"/>
-                                <field name="specialite"/>
-                                <field name="departement"/>
-                                <field name="date_recrutement"/>
+                                <field name="grade" />
+                                <field name="specialite" />
+                                <field name="departement" />
+                                <field name="date_recrutement" />
                             </group>
                         </page>
 
                         <page string="Matières enseignées">
                             <field name="matiere_ids">
                                 <tree editable="bottom">
-                                    <field name="name"/>
-                                    <field name="code"/>
-                                    <field name="semestre"/>
-                                    <field name="classe_id"/>
+                                    <field name="name" />
+                                    <field name="code" />
+                                    <field name="semestre" />
+                                    <field name="classe_id" />
                                 </tree>
                             </field>
                         </page>
-                        <page string="Mes Réclamations">
-    <field name="reclamation_prof_ids" context="{'default_enseignant_id': active_id}">
-        <tree editable="bottom">
-            <field name="type_reclamation"/>
-            <field name="titre"/>
-            <field name="etat"/>
-            <field name="date_creation"/>
-        </tree>
-        <form>
-            <group>
-                <field name="type_reclamation" required="1"/>
-                <field name="titre" required="1"/>
-                <field name="description" widget="text" required="1"/>
-                <field name="etat" readonly="1"/>
-                <field name="reponse_admin" widget="text" readonly="1"/>
-            </group>
-        </form>
-    </field>
-</page>
+
+
                     </notebook>
                 </sheet>
             </form>
@@ -77,16 +61,16 @@
         <field name="model">student.enseignant</field>
         <field name="arch" type="xml">
             <tree string="Enseignants">
-                <field name="image_128" widget="image" options="{'size': [40, 40]}"/>
-                <field name="nom"/>
-                <field name="prenom"/>
-                <field name="email"/>
-                <field name="identifiant"/>
-                <field name="cin"/>
-                <field name="grade"/>
-                <field name="specialite"/>
-                <field name="departement"/>
-                <field name="date_recrutement"/>
+                <field name="image_128" widget="image" options="{'size': [40, 40]}" />
+                <field name="nom" />
+                <field name="prenom" />
+                <field name="email" />
+                <field name="identifiant" />
+                <field name="cin" />
+                <field name="grade" />
+                <field name="specialite" />
+                <field name="departement" />
+                <field name="date_recrutement" />
             </tree>
         </field>
     </record>
@@ -97,36 +81,51 @@
         <field name="model">student.enseignant</field>
         <field name="arch" type="xml">
             <kanban class="o_kanban_example">
-                <field name="id"/>
-                <field name="image_128"/>
-                <field name="nom"/>
-                <field name="prenom"/>
-                <field name="email"/>
-                <field name="grade"/>
-                <field name="departement"/>
+                <field name="id" />
+                <field name="image_128" />
+                <field name="nom" />
+                <field name="prenom" />
+                <field name="email" />
+                <field name="grade" />
+                <field name="departement" />
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click o_kanban_card">
                             <div class="o_kanban_image text-center">
                                 <t t-if="record.image_128.raw_value">
-                                    <img t-att-src="kanban_image('student.enseignant', 'image_128', record.id.raw_value)"
-                                         class="oe_kanban_avatar"
-                                         style="max-height: 80px; border-radius: 50%;"
-                                         alt="Photo enseignant"/>
+                                    <img
+                                        t-att-src="kanban_image('student.enseignant', 'image_128', record.id.raw_value)"
+                                        class="oe_kanban_avatar"
+                                        style="max-height: 80px; border-radius: 50%;"
+                                        alt="Photo enseignant" />
                                 </t>
                                 <t t-if="!record.image_128.raw_value">
                                     <img src="/web/static/src/img/placeholder.png"
-                                         class="oe_kanban_avatar"
-                                         style="max-height: 80px; border-radius: 50%;"
-                                         alt="Photo par défaut"/>
+                                        class="oe_kanban_avatar"
+                                        style="max-height: 80px; border-radius: 50%;"
+                                        alt="Photo par défaut" />
                                 </t>
                             </div>
                             <div class="o_kanban_details text-center mt8">
-                                <strong><t t-esc="record.nom.value"/></strong><br/>
-                                <span><t t-esc="record.prenom.value"/></span><br/>
-                                <span><t t-esc="record.email.value"/></span><br/>
-                                <small><t t-esc="record.grade.value"/></small><br/>
-                                <small><t t-esc="record.departement.value"/></small>
+                                <strong>
+                                    <t t-esc="record.nom.value" />
+                                </strong>
+                                <br />
+                                <span>
+                                    <t t-esc="record.prenom.value" />
+                                </span>
+                                <br />
+                                <span>
+                                    <t t-esc="record.email.value" />
+                                </span>
+                                <br />
+                                <small>
+                                    <t t-esc="record.grade.value" />
+                                </small>
+                                <br />
+                                <small>
+                                    <t t-esc="record.departement.value" />
+                                </small>
                             </div>
                         </div>
                     </t>
@@ -140,6 +139,7 @@
         <field name="name">Enseignants</field>
         <field name="res_model">student.enseignant</field>
         <field name="view_mode">kanban,tree,form</field>
-        <field name="view_id" ref="view_enseignant_kanban"/>
+        <field name="view_id" ref="view_enseignant_kanban" />
     </record>
+
 </odoo>

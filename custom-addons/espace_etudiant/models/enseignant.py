@@ -28,10 +28,22 @@ class Enseignant(models.Model):
     specialite = fields.Char(string="Spécialité")
     date_recrutement = fields.Date(string="Date de recrutement")
     
+
+
+    # Dans student.enseignant
+    classe_ids = fields.Many2many(
+        'student.classe',
+        'enseignant_classe_rel',  # nom table relationnelle, à choisir
+        'enseignant_id',
+        'classe_id',
+        string="Classes"
+    )
+    
     # Relations
     note_ids = fields.One2many('student.note', 'enseignant_id', string="Notes")
     absence_ids = fields.One2many('student.absence', 'enseignant_id', string="Absences")
-    reclamation_prof_ids = fields.One2many('student.reclamation_prof', 'enseignant_id', string="Réclamations")
+    reclamation_ids = fields.One2many('student.reclamation_prof', 'enseignant_id', string="Réclamations")
+
     matiere_ids = fields.Many2many(
     'student.matiere',
     'matiere_enseignant_rel',  # table relationnelle
@@ -77,8 +89,10 @@ class Enseignant(models.Model):
         teacher_group = self.env.ref('base.group_user')
         for teacher in self:
             if not teacher.user_id:
-                login = teacher.identifiant
-                password = teacher.cin 
+
+                login = teacher.identifiant or teacher.email or f'teacher{teacher.id}@example.com'
+                password = teacher.cin or 'changeme123'
+
                 user_vals = {
                     'name': teacher.partner_id.name,
                     'login': login,

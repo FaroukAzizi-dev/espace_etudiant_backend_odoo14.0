@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Vue Formulaire Programme -->
+    <record id="view_programme_form" model="ir.ui.view">
+        <field name="name">student.programme.form</field>
+        <field name="model">student.programme</field>
+        <field name="arch" type="xml">
+            <form string="Programme">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="type"/>
+                        <field name="filiere_ids" widget="one2many_list" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue Liste Programme -->
+    <record id="view_programme_tree" model="ir.ui.view">
+        <field name="name">student.programme.tree</field>
+        <field name="model">student.programme</field>
+        <field name="arch" type="xml">
+            <tree string="Programmes">
+                <field name="name"/>
+                <field name="type"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action pour ouvrir la liste des Programmes -->
+    <record id="action_student_programme" model="ir.actions.act_window">
+        <field name="name">Programmes</field>
+        <field name="res_model">student.programme</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_programme_tree"/>
+    </record>
+
+</odoo>

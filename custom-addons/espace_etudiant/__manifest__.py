@@ -11,19 +11,31 @@
     'author': 'Farouk Azizi , Said Laffet',
     'website': 'https://example.com',
     'category': 'Education',
-    'depends': [],
+
+    'depends': ['base' ,
+                'mail',
+                'website'],
     'data': [
-        'views/enseignant.xml',
-        'views/student_etudiant_views.xml',
-        'views/matiere_views.xml',
-        'views/reclamation_prof.xml',
-        'views/admin_reclamation.xml',
-        'views/classe_action.xml',
-        'views/filiere_action.xml',
-        'views/niveau_action.xml',
-        'views/menus.xml',
-              
-          ],
+    # Security first
+    'security/ir.model.access.csv',
+    
+    # Base models
+    'views/programme_action.xml',
+    'views/filiere_action.xml',
+    'views/niveau_action.xml',
+    'views/matiere_views.xml',
+    'views/note.xml',
+    # Dependent models
+    'views/enseignant.xml',
+    'views/student_action.xml',
+    'views/classe_action.xml',
+    
+    # Menus last
+    'views/student_menu.xml',
+    ],
+
+
+
     'installable': True,
     'auto_install': False,
     'application': True,

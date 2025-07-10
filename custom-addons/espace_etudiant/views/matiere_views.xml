@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Vue formulaire Matière avec formule flexible -->
+
+    <!-- Vue formulaire Matière -->
     <record id="view_matiere_form" model="ir.ui.view">
         <field name="name">student.matiere.form</field>
         <field name="model">student.matiere</field>
@@ -8,36 +9,40 @@
             <form string="Matière">
                 <sheet>
                     <group>
-                        <field name="name" required="1"/>
-                        <field name="code" required="1"/>
-                        <field name="description"/>
+                        <field name="name" required="1" />
+                        <field name="code" required="1" />
+                        <field name="description" />
                     </group>
                     <group>
-                        <field name="semestre" required="1"/>
-                        <field name="volume_horaire"/>
-                        <field name="coefficient" required="1"/>
+                        <field name="semestre" required="1" />
+                        <field name="volume_horaire" />
+                        <field name="coefficient" required="1" />
                     </group>
                     <group>
-                        <field name="classe_id" required="1"/>
+                        <field name="classe_id" required="1" />
                     </group>
                     <group string="Enseignants">
-                        <field name="enseignant_ids" widget="many2many_tags" 
-                               required="1" 
-                               options="{'color_field': 'color', 'no_create': True}"/>
-                        <field name="enseignant_id" domain="[('id', 'in', enseignant_ids)]"/>
-                    </group>
-                    <group string="Formule d'évaluation">
-                        <div class="o_form_label text-info">
-                            <i class="fa fa-info-circle"/> Configurez les types d'évaluation utilisés (la somme doit faire 100%)
-                        </div>
-                        <field name="poids_cc" placeholder="Ex: 30 pour CC 30%"/>
-                        <field name="poids_tp" placeholder="Ex: 20 pour TP 20%"/>
-                        <field name="poids_examen" placeholder="Ex: 50 pour Examen 50%"/>
-                        <field name="formule_active" readonly="1" class="text-success"/>
+                        <field name="enseignant_ids" widget="many2many_tags"
+                            required="1"
+                            options="{'color_field': 'color', 'no_create': True}"
+                            help="Sélectionnez tous les enseignants qui vont enseigner cette matière" />
+                        <field name="enseignant_id"
+                            domain="[('id', 'in', enseignant_ids)]"
+                            help="Enseignant principal (automatiquement défini)" />
                     </group>
                     <group>
-                        <field name="active"/>
+                        <field name="active" />
                     </group>
+                    <group>
+                        <field name="evaluation_type_ids">
+                            <tree editable="bottom">
+                                <field name="type" />
+                                <field name="pourcentage" />
+                            </tree>
+                        </field>
+
+                    </group>
+
                 </sheet>
             </form>
         </field>
@@ -49,16 +54,18 @@
         <field name="model">student.matiere</field>
         <field name="arch" type="xml">
             <tree string="Matières">
-                <field name="name"/>
-                <field name="code"/>
-                <field name="semestre"/>
-                <field name="volume_horaire"/>
-                <field name="coefficient"/>
-                <field name="formule_active"/>
-                <field name="enseignant_ids" widget="many2many_tags"/>
-                <field name="enseignant_id"/>
-                <field name="classe_id"/>
-                <field name="active"/>
+
+                <field name="name" />
+                <field name="code" />
+                <field name="semestre" />
+                <field name="volume_horaire" />
+                <field name="coefficient" />
+                <field name="evaluation_summary" string="Évaluations" />
+                <field name="enseignant_ids" widget="many2many_tags" />
+                <field name="enseignant_id" />
+                <field name="classe_id" />
+                <field name="active" />
+
             </tree>
         </field>
     </record>
@@ -69,33 +76,33 @@
         <field name="model">student.matiere</field>
         <field name="arch" type="xml">
             <kanban>
-                <field name="name"/>
-                <field name="code"/>
-                <field name="semestre"/>
-                <field name="coefficient"/>
-                <field name="formule_active"/>
-                <field name="enseignant_ids"/>
-                <field name="classe_id"/>
+
+                <field name="name" />
+                <field name="code" />
+                <field name="semestre" />
+                <field name="coefficient" />
+                <field name="enseignant_ids" />
+                <field name="classe_id" />
+
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_card">
                             <div class="oe_kanban_content">
                                 <div class="oe_kanban_details">
                                     <strong class="o_kanban_record_title">
-                                        <field name="name"/>
+
+                                        <field name="name" />
                                     </strong>
                                     <div class="o_kanban_record_subtitle">
-                                        <field name="code"/> - <field name="semestre"/>
+                                        <field name="code" /> - <field name="semestre" />
                                     </div>
                                     <div class="o_kanban_record_body">
-                                        <div>Coefficient: <field name="coefficient"/></div>
-                                        <div>Classe: <field name="classe_id"/></div>
-                                        <div class="text-success">
-                                            <strong>Formule:</strong> <field name="formule_active"/>
-                                        </div>
+                                        <div>Coefficient: <field name="coefficient" /></div>
+                                        <div>Classe: <field name="classe_id" /></div>
                                         <div class="mt8">
                                             <strong>Enseignants:</strong>
-                                            <field name="enseignant_ids" widget="many2many_tags"/>
+                                            <field name="enseignant_ids" widget="many2many_tags" />
+
                                         </div>
                                     </div>
                                 </div>
@@ -105,7 +112,10 @@
                 </templates>
             </kanban>
         </field>
+
+
     </record>
+
 
     <!-- Vue recherche Matières -->
     <record id="view_matiere_search" model="ir.ui.view">
@@ -113,21 +123,26 @@
         <field name="model">student.matiere</field>
         <field name="arch" type="xml">
             <search string="Rechercher Matières">
-                <field name="name"/>
-                <field name="code"/>
-                <field name="formule_active"/>
-                <filter string="Semestre 1" name="semestre_1" domain="[('semestre', '=', '1')]"/>
-                <filter string="Semestre 2" name="semestre_2" domain="[('semestre', '=', '2')]"/>
-                <filter string="Avec CC" name="avec_cc" domain="[('poids_cc', '>', 0)]"/>
-                <filter string="Avec TP" name="avec_tp" domain="[('poids_tp', '>', 0)]"/>
-                <filter string="Avec Examen" name="avec_examen" domain="[('poids_examen', '>', 0)]"/>
-                <filter string="CC + Examen uniquement" name="cc_examen_only" 
-                        domain="[('poids_cc', '>', 0), ('poids_examen', '>', 0), ('poids_tp', '=', 0)]"/>
-                <filter string="TP + Examen uniquement" name="tp_examen_only" 
-                        domain="[('poids_tp', '>', 0), ('poids_examen', '>', 0), ('poids_cc', '=', 0)]"/>
+
+                <field name="name" string="Nom" />
+                <field name="code" string="Code" />
+                <field name="enseignant_ids" string="Enseignants" />
+                <field name="classe_id" string="Classe" />
+
+                <filter string="Semestre 1" name="semestre_1" domain="[('semestre', '=', '1')]" />
+                <filter string="Semestre 2" name="semestre_2" domain="[('semestre', '=', '2')]" />
+                <separator />
+                <filter string="Actif" name="active" domain="[('active', '=', True)]" />
+                <filter string="Inactif" name="inactive" domain="[('active', '=', False)]" />
+
                 <group expand="0" string="Grouper par">
-                    <filter string="Semestre" name="group_semestre" context="{'group_by': 'semestre'}"/>
-                    <filter string="Classe" name="group_classe" context="{'group_by': 'classe_id'}"/>
+                    <filter string="Semestre" name="group_by_semestre"
+                        context="{'group_by': 'semestre'}" />
+                    <filter string="Classe" name="group_by_classe"
+                        context="{'group_by': 'classe_id'}" />
+                    <filter string="Enseignant principal" name="group_by_enseignant"
+                        context="{'group_by': 'enseignant_id'}" />
+
                 </group>
             </search>
         </field>
@@ -138,13 +153,19 @@
         <field name="name">Matières</field>
         <field name="res_model">student.matiere</field>
         <field name="view_mode">tree,kanban,form,graph</field>
-        <field name="view_id" ref="view_matiere_tree"/>
-        <field name="search_view_id" ref="view_matiere_search"/>
+
+        <field name="view_id" ref="view_matiere_tree" />
+        <field name="search_view_id" ref="view_matiere_search" />
         <field name="context">{}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Créez votre première matière !</p>
-            <p>Ajoutez les matières enseignées dans votre établissement avec leur formule d'évaluation personnalisée.</p>
-            <p>Vous pouvez utiliser différentes combinaisons : CC+Examen, TP+Examen, ou les trois types d'évaluation.</p>
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre première matière !
+            </p>
+            <p>
+                Ajoutez les matières enseignées dans votre établissement.
+                Vous pouvez assigner plusieurs enseignants à chaque matière.
+            </p>
+
         </field>
     </record>
 </odoo>
