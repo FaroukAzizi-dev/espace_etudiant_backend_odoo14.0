@@ -1,11 +1,12 @@
-from odoo import models, fields
+from odoo import models, fields, api
+from datetime import date
 
-class Classe(models.Model):
-    _name = 'student.classe'
-    _description = 'Classe'
+class StudentEDT(models.Model):
+    _name = 'student.edt'
+    _description = "Emploi du Temps"
 
-    name = fields.Char()
-    filiere = fields.Char()
-    niveau = fields.Char()
-    edt_id = fields.Many2one('student.edt', string="Emploi du temps")
-    
+    semaine = fields.Char(string="Semaine", required=True, help="Exemple : Semaine 1 ou 2025-W27")
+    chemin_fichier = fields.Binary(string="Fichier Emploi du Temps", required=True, attachment=True)
+    date_upload = fields.Date(string="Date d'ajout", default=fields.Date.today)
+    uploaded_by = fields.Many2one('res.users', string="Ajouté par", default=lambda self: self.env.user)
+    classe_id = fields.Many2one('student.classe', string="Classe concernée", required=True)

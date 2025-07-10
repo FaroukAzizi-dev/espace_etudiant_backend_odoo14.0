@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ===== Vue Tree (liste des classes) ===== -->
+    <record id="view_student_classe_tree" model="ir.ui.view">
+        <field name="name">student.classe.tree</field>
+        <field name="model">student.classe</field>
+        <field name="arch" type="xml">
+            <tree string="Classes">
+                <field name="name"/>
+                <field name="filiere_id"/>
+                <field name="niveau_id"/>
+                <field name="enseignant_ids"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ===== Vue Form (formulaire classe) ===== -->
+    <record id="view_student_classe_form" model="ir.ui.view">
+        <field name="name">student.classe.form</field>
+        <field name="model">student.classe</field>
+        <field name="arch" type="xml">
+            <form string="Classe">
+                <sheet>
+                    <group>
+                        <field name="name" required="1"/>
+                        <field name="filiere_id" required="1"/>
+                        <field name="niveau_id" required="1"/>
+                        <field name="enseignant_ids" widget="many2many_tags"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ===== Action pour afficher la liste des classes ===== -->
+    <record id="action_student_classe" model="ir.actions.act_window">
+        <field name="name">Classes</field>
+        <field name="res_model">student.classe</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_student_classe_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre première classe
+            </p>
+        </field>
+    </record>
+
+</odoo>

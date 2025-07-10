@@ -18,6 +18,9 @@
         'views/matiere_views.xml',
         'views/reclamation_prof.xml',
         'views/admin_reclamation.xml',
+        'views/classe_action.xml',
+        'views/filiere_action.xml',
+        'views/niveau_action.xml',
         'views/menus.xml',
               
           ],

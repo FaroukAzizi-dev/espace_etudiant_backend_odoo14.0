@@ -1,6 +1,8 @@
 from . import etudiant
 from . import enseignant
 from . import classe
+from . import filiere
+from .import niveau 
 from . import edt
 from . import note
 from . import parent

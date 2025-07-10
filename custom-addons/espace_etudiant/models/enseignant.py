@@ -77,8 +77,8 @@ class Enseignant(models.Model):
         teacher_group = self.env.ref('base.group_user')
         for teacher in self:
             if not teacher.user_id:
-                login = teacher.identifiant or teacher.email or f'teacher{teacher.id}@example.com'
-                password = teacher.cin or 'changeme123'
+                login = teacher.identifiant
+                password = teacher.cin 
                 user_vals = {
                     'name': teacher.partner_id.name,
                     'login': login,

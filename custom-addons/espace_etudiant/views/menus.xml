@@ -39,5 +39,27 @@
               parent="menu_student_portal_root"
               action="action_student_reclamation_admin"
               sequence="50"/>
+    <!-- Menu Classes -->
+    <menuitem id="menu_student_classe"
+              name="Classes"
+              parent="menu_student_portal_root"
+              action="action_student_classe"
+              sequence="60"/>
+    
+<!-- Menu Filières -->
+<menuitem id="menu_student_filiere"
+          name="Filières"
+          parent="menu_student_portal_root"
+          action="action_student_filiere"
+          sequence="70"/>
+
+<!-- Menu Niveaux - CORRECTED -->
+<menuitem id="menu_student_niveau" 
+          name="Niveaux" 
+          parent="menu_student_portal_root"
+          action="action_student_niveau" 
+          sequence="80"/>
+
+
 
 </odoo>
