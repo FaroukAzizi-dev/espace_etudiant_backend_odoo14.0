@@ -17,3 +17,5 @@ from . import absence
 from . import reclamation
 from . import reclamation_prof
 from . import document
+from . import timetable
+from . import timing

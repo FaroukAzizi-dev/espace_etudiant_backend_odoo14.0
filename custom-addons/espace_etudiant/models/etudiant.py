@@ -49,6 +49,8 @@ class Student(models.Model):
     
     # Academic records
     academic_record_ids = fields.One2many('student.academic.record', 'etudiant_id', string="Historique académique")
+    
+    
 
 
     active = fields.Boolean(default=True)

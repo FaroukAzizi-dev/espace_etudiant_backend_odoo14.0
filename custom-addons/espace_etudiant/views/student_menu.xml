@@ -17,7 +17,7 @@
         action="espace_etudiant.action_student_enseignant"
         sequence="10" />
 
-      <menuitem id="menu_student_note"
+    <menuitem id="menu_student_note"
         name="Notes"
         parent="menu_student_portal_root"
         action="espace_etudiant.action_student_notes"
@@ -29,8 +29,19 @@
         parent="menu_student_portal_root"
         sequence="10" />
 
+    <menuitem
+        id="menu_student_timetable"
+        name="Emploi du Temps"
+        parent="menu_student_portal_root"
+        action="espace_etudiant.action_student_session"
+        sequence="10">
+    </menuitem>
 
-    <!-- Menu Item -->
+    
+
+    <!-- //////////////////////////////////////////////////////////////////////////////////// -->
+
+
     <menuitem id="menu_student_classe"
         name="Classe"
         parent="menu_student_configuration"
@@ -62,5 +73,13 @@
         sequence="10">
     </menuitem>
 
+
+    <menuitem 
+        id="menu_student_timing" 
+        name="Timings" 
+        parent="menu_student_configuration"
+        action="action_student_timing"
+        sequence="10">
+    </menuitem>
 
 </odoo>

@@ -28,6 +28,8 @@
     'views/enseignant.xml',
     'views/student_action.xml',
     'views/classe_action.xml',
+    'views/timetable.xml',
+    'views/timing.xml',
     
     # Menus last
     'views/student_menu.xml',

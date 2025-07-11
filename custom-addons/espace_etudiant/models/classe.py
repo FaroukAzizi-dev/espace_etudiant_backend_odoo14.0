@@ -15,6 +15,7 @@ class Classe(models.Model):
         'enseignant_id',
         string="Enseignants"
     )
+    classe_id = fields.Many2one('student.classe', string="Classe")
 
 
     
