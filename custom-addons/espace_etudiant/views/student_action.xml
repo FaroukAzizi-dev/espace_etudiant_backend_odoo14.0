@@ -141,16 +141,6 @@
                             </group>
                         </page>
 
-                        <page string="Historique de rang">
-                            <field name="academic_record_ids" readonly="1">
-                                <tree string="Rangs par année">
-                                    <field name="annee" />
-                                    <field name="classe" />
-                                    <field name="moyenne" />
-                                    <field name="rang" />
-                                </tree>
-                            </field>
-                        </page>
                         <page name="student_notes" string="Relevés de Notes">
                             <field name="note_ids">
                                 <tree string="Notes par matière" editable="bottom">
@@ -163,7 +153,6 @@
                                 </tree>
                             </field>
                         </page>
-
                     </notebook>
                 </sheet>
             </form>
@@ -193,11 +182,34 @@
         </field>
     </record>
 
+    <record id="view_student_graph_classe" model="ir.ui.view">
+        <field name="name">student.etudiant.graph</field>
+        <field name="model">student.etudiant</field>
+        <field name="arch" type="xml">
+            <graph string="etudiant-graph" type="bar">
+                <field name="id" type="measure" />
+                <field name="gender" />
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_student_graph_by_programme" model="ir.ui.view">
+        <field name="name">student.etudiant.graph.by.programme</field>
+        <field name="model">student.etudiant</field>
+        <field name="arch" type="xml">
+            <graph string="Nombre d'étudiants par Programme" type="bar">
+                <field name="id" type="measure" />
+                <field name="programme_id" type="row" />
+            </graph>
+        </field>
+    </record>
+
+
     <!-- ========================= ACTION WINDOW ========================= -->
     <record id="action_student_etudiant" model="ir.actions.act_window">
         <field name="name">Étudiants</field>
         <field name="res_model">student.etudiant</field>
-        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_mode">tree,form,kanban,graph</field>
         <field name="view_id" ref="view_student_tree" />
     </record>
 

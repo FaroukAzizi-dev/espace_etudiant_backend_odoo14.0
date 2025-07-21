@@ -19,6 +19,8 @@ services:
       - HOST=172.28.0.2
       - USER=odoo
       - PASSWORD=odoo
+      - STUDENT_PORTAL_JWT_SECRET=ebea25ac4b93122fa8e7e82dc173bd9d997021d3f72dbd75d0c900806a5692959850d845547bc5168aa594587677307a5da82f0adb4a1d5ce3e4cf87118d673c
+
     ports:
       - "8070:8069"
     networks:

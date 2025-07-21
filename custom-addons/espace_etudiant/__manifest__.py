@@ -34,7 +34,7 @@
     # Menus last
     'views/student_menu.xml',
     ],
-
+    'cors_enabled': True,
 
     'installable': True,
     'auto_install': False,
