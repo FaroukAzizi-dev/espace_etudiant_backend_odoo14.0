@@ -1,79 +1,80 @@
 from odoo import http
 from odoo.http import request, Response
-from datetime import datetime, timedelta, timezone
-import jwt
-import os
 import logging
-import json
 
 _logger = logging.getLogger(__name__)
 
-SECRET_KEY = os.getenv("STUDENT_PORTAL_JWT_SECRET")
-
 class StudentAuthController(http.Controller):
 
-    # SOLUTION 1: Change to type='json' to handle JSON-RPC requests
-    @http.route('/api/student/login', type='json', auth='public', methods=['POST'], csrf=False, cors="*")
-    def login(self):
+    @http.route('/api/student/authenticate', type='json', auth='public', methods=['POST'], csrf=False, cors="*")
+    def authenticate(self):
+        """
+        Student authentication - validates student exists then uses Odoo's built-in auth
+        """
         try:
-            # For type='json', use request.jsonrequest to get the data
-            data = request.jsonrequest
+            params = request.jsonrequest.get('params', {})
         except Exception as e:
             _logger.error(f"Error parsing request data: {e}")
             return {"error": "Failed to parse request data."}
 
-        email = data.get('email')
-        cin = data.get('cin')
+        # Extract parameters
+        # Set the database name directly in the backend
+        db = 'db_pacu-6csq-3ta6' 
+        email = params.get('login')
+        cin = params.get('password')
 
         if not email or not cin:
-            _logger.warning("Login attempt with missing email or CIN.")
             return {"error": "Email and CIN are required."}
 
         try:
+            # Validate that this is actually a student
             student = request.env['student.etudiant'].sudo().search([
                 ('email_personnel', '=', email),
                 ('cin', '=', cin)
             ], limit=1)
+
+            if not student:
+                _logger.warning(f"Student not found for email: {email}")
+                return {"error": "Invalid student credentials."}
+
+            if not student.user_id:
+                _logger.warning(f"Student {email} doesn't have a user account")
+                return {"error": "No user account found for this student."}
+
+            # Use Odoo's built-in authentication - it handles everything
+            uid = request.session.authenticate(db, student.user_id.login, cin)
+            
+            if not uid:
+                return {"error": "Authentication failed."}
+
+            # Get the standard session info that Odoo provides
+            session_info = request.env['ir.http'].session_info()
+            
+            # Just return what Odoo gives us
+            return session_info
+            
         except Exception as e:
-            _logger.error(f"Database query error during login: {e}")
-            return {"error": "An internal error occurred."}
+            _logger.error(f"Authentication error: {e}")
+            return {"error": "Authentication failed."}
 
-        if not student:
-            _logger.warning(f"Failed login attempt for email: {email}")
-            return {"error": "Invalid credentials."}
-
-        if not SECRET_KEY:
-            _logger.error("JWT Secret Key is not set in environment variables.")
-            return {"error": "Server configuration error."}
-
+    @http.route('/api/student/logout', type='json', auth='user', methods=['POST'], csrf=False, cors="*")
+    def logout(self):
+        """Logout using Odoo's built-in method"""
         try:
-            payload = {
-                "uid": student.user_id.id if student.user_id else None,
-                "student_id": student.id,
-                "exp": datetime.now(timezone.utc) + timedelta(hours=6)
-            }
-            token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+            request.session.logout(keep_db=False)
+            return {"message": "Logged out successfully"}
         except Exception as e:
-            _logger.error(f"Error encoding JWT token: {e}")
-            return {"error": "Failed to generate authentication token."}
+            _logger.error(f"Logout error: {e}")
+            return {"error": "Logout failed"}
 
-        response_data = {
-            "token": token,
-            "student": {
-                "id": student.id,
-                "name": student.partner_id.name if student.partner_id else "N/A",
-                "email": student.email_personnel,
-                "identifiant": student.identifiant
-            }
-        }
-        
-        # For type='json', return a Python dict/list, Odoo handles JSON conversion
-        return response_data
-
-
-    # OPTIONS route for CORS preflight (keep as type='http')
-    @http.route('/api/student/login', type='http', auth='public', methods=['OPTIONS'], csrf=False)
-    def _options_login_preflight(self, **kw):
+    # OPTIONS route for CORS preflight
+    @http.route([
+        '/api/student/authenticate', 
+        '/api/student/login',
+        '/api/student/session/info', 
+        '/api/student/logout'
+    ], type='http', auth='public', methods=['OPTIONS'], csrf=False)
+    def _options_preflight(self, **kw):
         headers = [
             ('Access-Control-Allow-Origin', '*'),
             ('Access-Control-Allow-Methods', 'POST, OPTIONS'),

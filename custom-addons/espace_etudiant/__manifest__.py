@@ -15,25 +15,31 @@
                 'mail',
                 'website'],
     'data': [
-    # Security first
+    # Sécurité
     'security/ir.model.access.csv',
-    
-    # Base models
+    'security/student_security.xml',
+
+    # Modèles de base
     'views/programme_action.xml',
     'views/filiere_action.xml',
     'views/niveau_action.xml',
     'views/matiere_views.xml',
     'views/note.xml',
-    # Dependent models
+
+    # Modèles dépendants
     'views/enseignant.xml',
     'views/student_action.xml',
     'views/classe_action.xml',
     'views/timetable.xml',
     'views/timing.xml',
-    
-    # Menus last
+
+    # Réclamations
+    'views/reclamation.xml',
+
+    # Menus
     'views/student_menu.xml',
     ],
+
     'cors_enabled': True,
 
     'installable': True,

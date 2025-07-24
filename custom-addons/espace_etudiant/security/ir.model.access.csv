@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_student_etudiant,access_student_etudiant,model_student_etudiant,,1,1,1,1
+access_student_reclamation,student.reclamation,model_student_reclamation,base.group_portal,1,1,1,0
+access_student_reclamation_admin,student.reclamation,model_student_reclamation,student.group_admin,1,1,1,1

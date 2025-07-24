@@ -1,5 +1,5 @@
 from odoo import models, fields, api
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, AccessError
 from datetime import datetime
 import re
 
@@ -7,6 +7,7 @@ class Student(models.Model):
     _name = 'student.etudiant'
     _description = 'Étudiant'
     _inherits = {'res.partner': 'partner_id'}
+    _inherit = ['mail.thread', 'mail.activity.mixin']  # Add tracking capabilities
 
     partner_id = fields.Many2one('res.partner', required=True, ondelete='cascade')
     user_id = fields.Many2one('res.users', string="Utilisateur lié")
@@ -80,8 +81,13 @@ class Student(models.Model):
             if not record.identifiant:
                 raise ValidationError("L'identifiant est obligatoire.")
 
+    
     @api.model
     def create(self, vals):
+        # Check creation rights
+        if not self.env.su and not self.check_access_rights('create', raise_exception=False):
+            raise AccessError("You are not allowed to create students")
+            
         if 'partner_id' not in vals:
             full_name = f"{vals.get('first_name', '')} {vals.get('last_name', '')}".strip()
             partner = self.env['res.partner'].create({
@@ -91,52 +97,65 @@ class Student(models.Model):
             })
             vals['partner_id'] = partner.id
         
-        student = super().create(vals)
-        return student
+        return super().create(vals)
 
-
-    def create_user_account(self):
-        """Créer un compte utilisateur lié au partenaire s'il n'existe pas"""
-        User = self.env['res.users']
-        portal_group = self.env.ref('base.group_portal')
-        for student in self:
-            if not student.user_id and student.email_personnel:
-                login = student.email_personnel
-                password = student.cin  # Utiliser le CIN comme mot de passe par défaut
-                user = User.create({
-                    'name': student.partner_id.name,
-                    'login': login,
-                    'password': password,
-                    'partner_id': student.partner_id.id,
-                    'groups_id': [(6, 0, [portal_group.id])],
-                })
-                student.user_id = user.id
+    def write(self, vals):
+        # Check write rights
+        if not self.env.su and not self.check_access_rights('write', raise_exception=False):
+            raise AccessError("You are not allowed to modify students")
+        return super().write(vals)
 
     def unlink(self):
-        # Supprimer aussi le partenaire lié
-        for student in self:
-            if student.partner_id:
-                student.partner_id.unlink()
-        return super().unlink()
+        # Check deletion rights
+        if not self.env.su and not self.check_access_rights('unlink', raise_exception=False):
+            raise AccessError("You are not allowed to delete students")
+            
+        partners = self.mapped('partner_id')
+        res = super().unlink()
+        partners.unlink()
+        return res
+
+class Reclamation(models.Model):
+    _name = 'student.reclamation'
+    _description = 'Réclamations des Étudiants'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    
+    etudiant_id = fields.Many2one('student.etudiant', string="Étudiant", required=True)
+    titre = fields.Char(string="Titre", required=True)
+    description = fields.Text(string="Description", required=True)
+    date_creation = fields.Datetime(string="Date de création", default=fields.Datetime.now)
+    etat = fields.Selection([
+        ('nouvelle', 'Nouvelle'),
+        ('en_cours', 'En cours'),
+        ('resolue', 'Résolue'),
+        ('rejetee', 'Rejetée')
+    ], string="État", default='nouvelle')
+    piece_jointe = fields.Binary(string="Pièce jointe")
+    nom_fichier = fields.Char(string="Nom du fichier")
+    reponse_admin = fields.Text(string="Réponse de l'administration")
+    admin_id = fields.Many2one('res.users', string="Traité par")
+    date_traitement = fields.Datetime(string="Date de traitement")
+
+    @api.model
+    def create(self, vals):
+        # Auto-set student if not specified (for authenticated student users)
+        if 'etudiant_id' not in vals:
+            student = self.env['student.etudiant'].search([
+                ('user_id', '=', self.env.user.id)
+            ], limit=1)
+            if student:
+                vals['etudiant_id'] = student.id
+            else:
+                raise AccessError("No student profile found for this user")
+                
+        return super().create(vals)
+
 class AcademicRecord(models.Model):
     _name = 'student.academic.record'
     _description = 'Historique academique de etudiant'
     
-    etudiant_id = fields.Many2one('student.etudiant', string="Étudiant" , ondelete='cascade')
-    
+    etudiant_id = fields.Many2one('student.etudiant', string="Étudiant", required=True, ondelete='cascade')
     moyenne = fields.Float(string="Moyenne")
     rang = fields.Integer(string="Rang")
     nb_credits = fields.Integer(string="Nombre de crédits")
-    annee_universitaire = fields.Char(string="Annee universitaire")
-    
-
-
-    
-
-
-
-
-
-   
+    annee_universitaire = fields.Char(string="Année universitaire")

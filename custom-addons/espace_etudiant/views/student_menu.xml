@@ -37,6 +37,14 @@
         sequence="10">
     </menuitem>
 
+    <menuitem
+        id="menu_student_reclamation"
+        name="Reclamation"
+        parent="menu_student_portal_root"
+        action="espace_etudiant.action_student_reclamation"
+        sequence="10">
+    </menuitem>
+
     
 
     <!-- //////////////////////////////////////////////////////////////////////////////////// -->
@@ -81,5 +89,7 @@
         action="action_student_timing"
         sequence="10">
     </menuitem>
+
+    
 
 </odoo>
