@@ -1,5 +1,5 @@
 from odoo import models, fields, api
-from odoo.exceptions import ValidationError, AccessError
+from odoo.exceptions import ValidationError
 from datetime import datetime
 import re
 
@@ -53,7 +53,7 @@ class Student(models.Model):
     
     active = fields.Boolean(default=True)
     
-       # --- Contraintes SQL pour l'unicité ---
+    # --- Contraintes SQL pour l'unicité ---
     _sql_constraints = [
         ('cin_unique', 'unique(cin)', "Le CIN doit être unique."),
         ('identifiant_unique', 'unique(identifiant)', "L'identifiant doit être unique."),
@@ -81,13 +81,8 @@ class Student(models.Model):
             if not record.identifiant:
                 raise ValidationError("L'identifiant est obligatoire.")
 
-    
     @api.model
     def create(self, vals):
-        # Check creation rights
-        if not self.env.su and not self.check_access_rights('create', raise_exception=False):
-            raise AccessError("You are not allowed to create students")
-            
         if 'partner_id' not in vals:
             full_name = f"{vals.get('first_name', '')} {vals.get('last_name', '')}".strip()
             partner = self.env['res.partner'].create({
@@ -99,56 +94,23 @@ class Student(models.Model):
         
         return super().create(vals)
 
-    def write(self, vals):
-        # Check write rights
-        if not self.env.su and not self.check_access_rights('write', raise_exception=False):
-            raise AccessError("You are not allowed to modify students")
-        return super().write(vals)
+    def create_user_account(self):
+        """Créer un compte utilisateur lié au partenaire s'il n'existe pas"""
+        User = self.env['res.users']
+        portal_group = self.env.ref('base.group_portal')
+        for student in self:
+            if not student.user_id:
 
-    def unlink(self):
-        # Check deletion rights
-        if not self.env.su and not self.check_access_rights('unlink', raise_exception=False):
-            raise AccessError("You are not allowed to delete students")
-            
-        partners = self.mapped('partner_id')
-        res = super().unlink()
-        partners.unlink()
-        return res
-
-class Reclamation(models.Model):
-    _name = 'student.reclamation'
-    _description = 'Réclamations des Étudiants'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    
-    etudiant_id = fields.Many2one('student.etudiant', string="Étudiant", required=True)
-    titre = fields.Char(string="Titre", required=True)
-    description = fields.Text(string="Description", required=True)
-    date_creation = fields.Datetime(string="Date de création", default=fields.Datetime.now)
-    etat = fields.Selection([
-        ('nouvelle', 'Nouvelle'),
-        ('en_cours', 'En cours'),
-        ('resolue', 'Résolue'),
-        ('rejetee', 'Rejetée')
-    ], string="État", default='nouvelle')
-    piece_jointe = fields.Binary(string="Pièce jointe")
-    nom_fichier = fields.Char(string="Nom du fichier")
-    reponse_admin = fields.Text(string="Réponse de l'administration")
-    admin_id = fields.Many2one('res.users', string="Traité par")
-    date_traitement = fields.Datetime(string="Date de traitement")
-
-    @api.model
-    def create(self, vals):
-        # Auto-set student if not specified (for authenticated student users)
-        if 'etudiant_id' not in vals:
-            student = self.env['student.etudiant'].search([
-                ('user_id', '=', self.env.user.id)
-            ], limit=1)
-            if student:
-                vals['etudiant_id'] = student.id
-            else:
-                raise AccessError("No student profile found for this user")
-                
-        return super().create(vals)
+                login = student.email_personnel
+                password = student.cin  # Utiliser le CIN comme mot de passe par défaut
+                user = User.create({
+                    'name': student.partner_id.name,
+                    'login': login,
+                    'password': password,
+                    'partner_id': student.partner_id.id,
+                    'groups_id': [(6, 0, [portal_group.id])],
+                })
+                student.user_id = user.id
 
 class AcademicRecord(models.Model):
     _name = 'student.academic.record'

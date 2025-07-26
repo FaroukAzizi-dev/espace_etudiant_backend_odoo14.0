@@ -17,7 +17,6 @@
     'data': [
     # Sécurité
     'security/ir.model.access.csv',
-    'security/student_security.xml',
 
     # Modèles de base
     'views/programme_action.xml',
@@ -25,7 +24,8 @@
     'views/niveau_action.xml',
     'views/matiere_views.xml',
     'views/note.xml',
-
+    'views/reclamation.xml',
+    
     # Modèles dépendants
     'views/enseignant.xml',
     'views/student_action.xml',
@@ -33,8 +33,7 @@
     'views/timetable.xml',
     'views/timing.xml',
 
-    # Réclamations
-    'views/reclamation.xml',
+  
 
     # Menus
     'views/student_menu.xml',

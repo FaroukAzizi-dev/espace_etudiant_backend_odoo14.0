@@ -3,65 +3,39 @@
 
     <!-- ========================= KANBAN VIEW ========================= -->
     <record model="ir.ui.view" id="view_student_kanban">
-        <field name="name">Student Kanban</field>
+        <field name="name">student.etudiant.kanban</field>
         <field name="model">student.etudiant</field>
         <field name="arch" type="xml">
-            <kanban>
-                <field name="partner_id" />
-                <field name="nationality_id" />
-                <field name="telephone" />
-                <field name="email_personnel" />
-                <field name="classe_id" />
-                <field name="programme_id" />
-                <field name="filiere_id" />
-                <field name="niveau_id" />
-                <field name="statut" />
-                <field name="image_1920" />
+            <kanban default_group_by="classe_id">
+                <field name="partner_id"/>
+                <field name="nationality_id"/>
+                <field name="telephone"/>
+                <field name="email_personnel"/>
+                <field name="classe_id"/>
+                <field name="programme_id"/>
+                <field name="filiere_id"/>
+                <field name="niveau_id"/>
+                <field name="statut"/>
+                <field name="image_1920"/>
 
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click o_kanban_record">
-                            <div class="o_kanban_image_box"
-                                style="text-align: center; margin-bottom: 10px;">
-                                <field name="image_1920" widget="image" options="{'size': [64, 64]}"
-                                    class="oe_kanban_avatar" />
+                            <div class="o_kanban_image" t-attf-class="o_kanban_image #{kanban_image_color}">
+                                <field name="image_1920" widget="image" class="oe_kanban_avatar" options='{"size": [64, 64]}'/>
                             </div>
-                            <div class="o_kanban_primary_left">
-                                <strong>
-                                    <field name="partner_id" />
-                                </strong>
+                            <div class="oe_kanban_details">
+                                <strong><field name="partner_id"/></strong>
                                 <div>
-                                    <div>
-                                        <strong>Nationalité :</strong>
-                                        <field name="nationality_id" />
-                                    </div>
-                                    <div>
-                                        <strong>Téléphone :</strong>
-                                        <field name="telephone" />
-                                    </div>
-                                    <div>
-                                        <strong>Email :</strong>
-                                        <field name="email_personnel" />
-                                    </div>
-                                    <div>
-                                        <strong>Classe :</strong>
-                                        <field name="classe_id" />
-                                    </div>
-                                    <div>
-                                        <strong>Programme :</strong>
-                                        <field name="programme_id" />
-                                    </div>
-                                    <div>
-                                        <strong>Filière :</strong>
-                                        <field name="filiere_id" />
-                                    </div>
-                                    <div>
-                                        <strong>Niveau :</strong>
-                                        <field name="niveau_id" />
-                                    </div>
-                                    <div>
-                                        <strong>Statut :</strong>
-                                        <field name="statut" />
+                                    <div><strong>Nationalité:</strong> <field name="nationality_id"/></div>
+                                    <div><strong>Téléphone:</strong> <field name="telephone"/></div>
+                                    <div><strong>Email:</strong> <field name="email_personnel"/></div>
+                                    <div><strong>Classe:</strong> <field name="classe_id"/></div>
+                                    <div><strong>Programme:</strong> <field name="programme_id"/></div>
+                                    <div><strong>Filière:</strong> <field name="filiere_id"/></div>
+                                    <div><strong>Niveau:</strong> <field name="niveau_id"/></div>
+                                    <div><strong>Statut:</strong> 
+                                        <field name="statut" widget="selection_badge"/>
                                     </div>
                                 </div>
                             </div>
@@ -76,80 +50,69 @@
     <record id="view_student_form" model="ir.ui.view">
         <field name="name">student.etudiant.form</field>
         <field name="model">student.etudiant</field>
-        <field name="priority" eval="8" />
+        <field name="priority" eval="8"/>
         <field name="arch" type="xml">
             <form string="Étudiant">
                 <header>
-                    <button type="object" name="create_user_account"
-                        string="Créer compte utilisateur" class="oe_highlight"
-                        attrs="{'invisible': [('user_id', '!=', False)]}" />
+                    <button name="create_user_account" type="object" 
+                            string="Créer compte utilisateur" 
+                            class="oe_highlight"
+                            attrs="{'invisible': [('user_id', '!=', False)]}"/>
+                    <field name="statut" widget="statusbar" statusbar_visible="active,inactive,graduated,dropout"/>
                 </header>
                 <sheet>
-                    <field name="active" invisible="1" />
-                    <div name="smart_button" class="oe_button_box" />
-                    <div class="oe_title w-auto">
-                        <h1>
-                            <table>
-                                <tr>
-                                    <td
-                                        style="width: 120px; vertical-align: middle; padding-right: 15px;">
-                                        <field name="image_1920" widget="image" class="oe_avatar" />
-                                    </td>
-                                    <td>
-                                        <table>
-                                            <tr>
-                                                <td style="padding-right:10px;">
-                                                    <field name="first_name" placeholder="Prénom"
-                                                        required="1" />
-                                                </td>
-                                                <td style="padding-right:10px;">
-                                                    <field name="last_name" placeholder="Nom"
-                                                        required="1" />
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </h1>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <div class="oe_avatar">
+                            <field name="image_1920" widget="image" options='{"preview_image": "image_1920"}'/>
+                        </div>
+                        <div class="oe_title_box">
+                            <field name="first_name" placeholder="Prénom" required="1"/>
+                            <field name="last_name" placeholder="Nom" required="1"/>
+                        </div>
                     </div>
 
-                    <notebook colspan="4">
-                        <page name="personal_information" string="Informations personnelles">
-                            <group col="4" colspan="4" name="personal_detail">
-                                <field name="gender" required="1" />
-                                <field name="birth_date" string="Date de naissance" />
-                                <field name="nationality_id" string="Nationalité" />
-                                <field name="cin" string="CIN" required="1" />
-                                <field name="adresse_domicile" string="Adresse domicile" />
-                                <field name="telephone" string="Téléphone" />
-                                <field name="email_personnel" string="Email personnel" />
-                                <field name="user_id" string="Utilisateur lié" readonly="1" />
+                    <notebook>
+                        <page name="personal_info" string="Informations personnelles">
+                            <group string="Détails personnels">
+                                <group>
+                                    <field name="gender" required="1"/>
+                                    <field name="birth_date"/>
+                                    <field name="nationality_id"/>
+                                </group>
+                                <group>
+                                    <field name="cin" required="1"/>
+                                    <field name="identifiant" required="1"/>
+                                    <field name="user_id" readonly="1"/>
+                                </group>
+                            </group>
+                            <group string="Coordonnées">
+                                <field name="adresse_domicile"/>
+                                <field name="telephone"/>
+                                <field name="email_personnel"/>
                             </group>
                         </page>
 
-                        <page name="academic_information" string="Informations académiques">
-                            <group>
-                                <field name="identifiant" String="Identifiant" required="1"></field>
-                                <field name="classe_id" string="Classe" />
-                                <field name="programme_id" string="Programme" />
-                                <field name="filiere_id"
-                                    domain="[('programme_id', '=', programme_id)]" />
-                                <field name="niveau_id" domain="[('filiere_id', '=', filiere_id)]" />
-                                <field name="date_inscription" string="Date d'inscription" />
-                                <field name="statut" string="Statut" />
+                        <page name="academic_info" string="Informations académiques">
+                            <group string="Programme">
+                                <field name="programme_id"/>
+                                <field name="filiere_id" domain="[('programme_id', '=', programme_id)]"/>
+                                <field name="niveau_id" domain="[('filiere_id', '=', filiere_id)]"/>
+                            </group>
+                            <group string="Inscription">
+                                <field name="classe_id"/>
+                                <field name="date_inscription"/>
                             </group>
                         </page>
 
-                        <page name="student_notes" string="Relevés de Notes">
-                            <field name="note_ids">
-                                <tree string="Notes par matière" editable="bottom">
-                                    <field name="matiere_id" />
-                                    <field name="note_cc" />
-                                    <field name="note_tp" />
-                                    <field name="note_examen" />
-                                    <field name="moyenne_generale" string="Moyenne Matière"
-                                        readonly="1" />
+                        <page name="notes" string="Relevés de Notes">
+                            <field name="note_ids" context="{'default_etudiant_id': active_id}">
+                                <tree editable="bottom">
+                                    <field name="matiere_id"/>
+                                    <field name="note_cc"/>
+                                    <field name="note_tp"/>
+                                    <field name="note_examen"/>
+                                    <field name="moyenne_generale" string="Moyenne" readonly="1"/>
                                 </tree>
                             </field>
                         </page>
@@ -159,58 +122,56 @@
         </field>
     </record>
 
-
-    <!-- ========================= TREE (LIST) VIEW ========================= -->
+    <!-- ========================= TREE VIEW ========================= -->
     <record id="view_student_tree" model="ir.ui.view">
         <field name="name">student.etudiant.tree</field>
         <field name="model">student.etudiant</field>
         <field name="arch" type="xml">
-            <tree string="Étudiants">
-                <field name="first_name" />
-                <field name="last_name" />
-                <field name="identifiant"></field>
-                <field name="user_id" />
-                <field name="nb_credits" />
-                <field name="moyenne" />
-                <field name="rang" />
-                <field name="classe_id" />
-                <field name="programme_id" />
-                <field name="filiere_id" />
-                <field name="niveau_id" />
-                <field name="statut" />
+            <tree string="Étudiants" decoration-info="statut == 'active'" decoration-danger="statut == 'inactive'">
+                <field name="first_name"/>
+                <field name="last_name"/>
+                <field name="identifiant"/>
+                <field name="user_id" widget="many2one_avatar"/>
+                    <field name="reclamation_ids" widget="many2many_tags"/>
+                <field name="classe_id"/>
+                <field name="programme_id"/>
+                <field name="statut" widget="badge"/>
             </tree>
         </field>
     </record>
 
-    <record id="view_student_graph_classe" model="ir.ui.view">
-        <field name="name">student.etudiant.graph</field>
+    <!-- ========================= GRAPH VIEWS ========================= -->
+    <record id="view_student_graph_gender" model="ir.ui.view">
+        <field name="name">student.etudiant.graph.gender</field>
         <field name="model">student.etudiant</field>
         <field name="arch" type="xml">
-            <graph string="etudiant-graph" type="bar">
-                <field name="id" type="measure" />
-                <field name="gender" />
+            <graph string="Répartition par genre" type="pie">
+                <field name="gender" type="row"/>
+                <field name="id" type="measure"/>
             </graph>
         </field>
     </record>
 
-    <record id="view_student_graph_by_programme" model="ir.ui.view">
-        <field name="name">student.etudiant.graph.by.programme</field>
+    <record id="view_student_graph_programme" model="ir.ui.view">
+        <field name="name">student.etudiant.graph.programme</field>
         <field name="model">student.etudiant</field>
         <field name="arch" type="xml">
-            <graph string="Nombre d'étudiants par Programme" type="bar">
-                <field name="id" type="measure" />
-                <field name="programme_id" type="row" />
+            <graph string="Étudiants par programme" type="bar">
+                <field name="programme_id" type="row"/>
+                <field name="id" type="measure"/>
             </graph>
         </field>
     </record>
-
 
     <!-- ========================= ACTION WINDOW ========================= -->
     <record id="action_student_etudiant" model="ir.actions.act_window">
         <field name="name">Étudiants</field>
         <field name="res_model">student.etudiant</field>
         <field name="view_mode">tree,form,kanban,graph</field>
-        <field name="view_id" ref="view_student_tree" />
+        <field name="view_id" ref="view_student_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Ajouter un nouvel étudiant</p>
+        </field>
     </record>
 
 </odoo>

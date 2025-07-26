@@ -4,7 +4,7 @@ from datetime import datetime
 class Reclamation(models.Model):
     _name = 'student.reclamation'
     _description = 'Réclamation Étudiant'
-    _order = 'date_creation desc'
+    _inherit = ['mail.thread', 'mail.activity.mixin']  # Recommended for tracking
     
     etudiant_id = fields.Many2one(
         'student.etudiant',
@@ -13,9 +13,10 @@ class Reclamation(models.Model):
         required=True
     )
     admin_id = fields.Many2one(
-        'student.admin',
+        'res.users',  # Changed to built-in users model
         string="Administrateur",
-        readonly=True
+        readonly=True,
+        tracking=True  # Track changes to this field
     )
     titre = fields.Char(
         string="Titre",
@@ -54,7 +55,7 @@ class Reclamation(models.Model):
     def action_prendre_en_charge(self):
         self.write({
             'etat': 'en_cours',
-            'admin_id': self.env['student.admin'].search([('user_id', '=', self.env.user.id)], limit=1).id
+            'admin_id': self.env.user.id  # Assign current user directly
         })
 
     def action_traiter(self, reponse):
