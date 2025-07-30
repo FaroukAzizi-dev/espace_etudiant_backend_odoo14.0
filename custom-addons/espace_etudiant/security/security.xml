@@ -3,6 +3,7 @@
     <data noupdate="1">
         
         <!-- Record rule for portal users (students) - they can only see their own reclamations -->
+        <!-- Main security rules -->
         <record id="rule_student_reclamation_portal_user" model="ir.rule">
             <field name="name">Student Reclamation: Portal Users Own Records</field>
             <field name="model_id" ref="model_student_reclamation"/>
@@ -72,6 +73,17 @@
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="True"/>
+        </record>
+
+           <!-- Add specific permission to read user names -->
+        <record id="student_reclamation_user_read_access" model="ir.model.access">
+            <field name="name">student.reclamation.user.read</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
         </record>
 
     </data>

@@ -1,3 +1,7 @@
+# ===============================================
+# 1. CONTRÔLEUR PYTHON CORRIGÉ (paste.txt)
+# ===============================================
+
 from odoo import http
 from odoo.http import request
 import json
@@ -8,26 +12,41 @@ _logger = logging.getLogger(__name__)
 
 class ReclamationController(http.Controller):
 
+    def _get_current_student(self):
+        """Helper method to get current student"""
+        if not request.env.user or request.env.user._is_public():
+            return None
+        
+        Etudiant = request.env['student.etudiant']
+        return Etudiant.search([('user_id', '=', request.env.user.id)], limit=1)
+
+    def _error_response(self, data, status_code=500):
+        """Helper method for error responses"""
+        headers = [('Content-Type', 'application/json'), ('Status', str(status_code))]
+        return request.make_response(json.dumps(data), headers)
+
+    def _success_response(self, data):
+        """Helper method for success responses"""
+        return request.make_response(
+            json.dumps(data, default=str),
+            [('Content-Type', 'application/json')]
+        )
+
     @http.route('/web/api/etudiant/reclamations', auth='user', type='http', methods=['GET'], website=True, cors='*')
     def list_reclamations(self, **kwargs):
         try:
-            # Check if user is authenticated
-            if not request.env.user or request.env.user._is_public():
-                headers = [('Content-Type', 'application/json'), ('Status', '401')]
-                return request.make_response(json.dumps({'error': 'Authentication required'}), headers)
-            
-            Etudiant = request.env['student.etudiant']
-            etudiant = Etudiant.search([('user_id', '=', request.env.user.id)], limit=1)
-            
+            etudiant = self._get_current_student()
             if not etudiant:
-                headers = [('Content-Type', 'application/json'), ('Status', '404')]
-                return request.make_response(json.dumps({'error': 'Student not found'}), headers)
+                return self._error_response({'error': 'Student not found'}, 404)
             
-            # Use sudo() with caution - only for reading own records
-            reclamations = request.env['student.reclamation'].search([('etudiant_id', '=', etudiant.id)])
+            # Use sudo() only for accessing related admin user info
+            reclamations = request.env['student.reclamation'].search([
+                ('etudiant_id', '=', etudiant.id)
+            ], order='date_creation desc')
             
             result = []
             for rec in reclamations:
+                admin_name = rec.admin_id.sudo().name if rec.admin_id else ''
                 result.append({
                     'id': rec.id,
                     'titre': rec.titre,
@@ -36,50 +55,46 @@ class ReclamationController(http.Controller):
                     'date_creation': rec.date_creation.isoformat() if rec.date_creation else '',
                     'reponse_admin': rec.reponse_admin or '',
                     'date_traitement': rec.date_traitement.isoformat() if rec.date_traitement else '',
-                    'admin': rec.admin_id.name if rec.admin_id else ''
+                    'admin': admin_name,  # Only expose the name, not full user record
+                    'nom_fichier': rec.nom_fichier or ''
                 })
             
-            return request.make_response(
-                json.dumps(result, default=str),
-                [('Content-Type', 'application/json')]
-            )
+            return self._success_response(result)
+            
         except Exception as e:
             _logger.error("Error fetching reclamations: %s", str(e))
-            headers = [('Content-Type', 'application/json'), ('Status', '500')]
-            return request.make_response(json.dumps({'error': str(e)}), headers)
+            return self._error_response({'error': str(e)}, 500)
 
     @http.route('/web/api/etudiant/reclamations/create', 
                auth='user', 
                type='http', 
                methods=['POST'], 
                website=True, 
-               csrf=False, 
+               csrf=True,  # ✅ CSRF activé
                cors='*')
     def create_reclamation(self, **post):
         try:
-            _logger.info("Received reclamation creation request with data: %s", post)
+            # Validation des données
+            if not post.get('titre') or not post.get('description'):
+                return self._error_response({
+                    'error': 'Le titre et la description sont requis'
+                }, 400)
             
-            # Check if user is authenticated
-            if not request.env.user or request.env.user._is_public():
-                headers = [('Content-Type', 'application/json'), ('Status', '401')]
-                return request.make_response(json.dumps({'error': 'Authentication required'}), headers)
-            
-            Etudiant = request.env['student.etudiant']
-            etudiant = Etudiant.search([('user_id', '=', request.env.user.id)], limit=1)
-            
+            # Check authentication
+            etudiant = self._get_current_student()
             if not etudiant:
-                headers = [('Content-Type', 'application/json'), ('Status', '404')]
-                return request.make_response(json.dumps({'error': 'Student not found'}), headers)
+                return self._error_response({'error': 'Student not found'}, 404)
             
             # Handle file upload
             piece_jointe = None
             nom_fichier = None
             if 'piece_jointe' in request.httprequest.files:
                 file = request.httprequest.files['piece_jointe']
-                piece_jointe = base64.b64encode(file.read())
-                nom_fichier = file.filename
+                if file.filename:  # Vérifier que le fichier existe
+                    piece_jointe = base64.b64encode(file.read())
+                    nom_fichier = file.filename
             
-            # Force commit to ensure the record is created
+            # Create reclamation (sans commit manuel - Odoo le gère)
             reclamation = request.env['student.reclamation'].create({
                 'etudiant_id': etudiant.id,
                 'titre': post.get('titre'),
@@ -89,22 +104,20 @@ class ReclamationController(http.Controller):
                 'etat': 'nouvelle'
             })
             
-            # Commit the transaction
-            request.env.cr.commit()
+            _logger.info("Created reclamation with ID: %s for student: %s", 
+                        reclamation.id, etudiant.name)
             
-            _logger.info("Created reclamation with ID: %s", reclamation.id)
+            return self._success_response({
+                'success': True, 
+                'reclamation_id': reclamation.id,
+                'message': 'Réclamation créée avec succès'
+            })
             
-            return request.make_response(
-                json.dumps({
-                    'success': True, 
-                    'reclamation_id': reclamation.id,
-                    'message': 'Reclamation created successfully'
-                }),
-                [('Content-Type', 'application/json')]
-            )
         except Exception as e:
             _logger.error("Error creating reclamation: %s", str(e))
-            # Rollback on error
-            request.env.cr.rollback()
-            headers = [('Content-Type', 'application/json'), ('Status', '500')]
-            return request.make_response(json.dumps({'error': str(e)}), headers)
+            return self._error_response({'error': 'Erreur lors de la création'}, 500)
+
+
+# ===============================================
+# 2. SERVICE ANGULAR AMÉLIORÉ
+# ===============================================
