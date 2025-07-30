@@ -1,6 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access.student.etudiant,access_student_etudiant,espace_etudiant.model_student_etudiant,base.group_portal,1,1,1,0
-access.student.etudiant.user,access_student_etudiant_user,espace_etudiant.model_student_etudiant,base.group_user,1,1,1,0
-access.student.reclamation.portal,access_student_reclamation_portal,model_student_reclamation,base.group_portal,1,1,1,0
-access.student.reclamation.user,access_student_reclamation_user,model_student_reclamation,base.group_user,1,1,1,0
-access.student.reclamation.admin,access_student_reclamation_admin,model_student_reclamation,base.group_system,1,1,1,1
+access_student_etudiant_portal,access_student_etudiant_portal,espace_etudiant.model_student_etudiant,base.group_portal,1,1,1,0
+access_student_etudiant_user,access_student_etudiant_user,espace_etudiant.model_student_etudiant,base.group_user,1,1,1,1
+access_student_etudiant_system,access_student_etudiant_system,espace_etudiant.model_student_etudiant,base.group_system,1,1,1,1
+access_student_reclamation_portal,access_student_reclamation_portal,model_student_reclamation,base.group_portal,1,1,1,0
+access_student_reclamation_user,access_student_reclamation_user,model_student_reclamation,base.group_user,1,1,1,1
+access_student_reclamation_system,access_student_reclamation_system,model_student_reclamation,base.group_system,1,1,1,1

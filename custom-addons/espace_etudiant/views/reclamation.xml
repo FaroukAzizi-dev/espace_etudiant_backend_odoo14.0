@@ -1,43 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Action -->
-    <record id="espace_etudiant.action_student_reclamation" model="ir.actions.act_window">
-        <field name="name">Réclamations</field>
-        <field name="res_model">student.reclamation</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucune réclamation trouvée</p>
-        </field>
-    </record>
-
     <!-- Tree View -->
     <record id="view_reclamation_tree" model="ir.ui.view">
         <field name="name">student.reclamation.tree</field>
         <field name="model">student.reclamation</field>
         <field name="arch" type="xml">
-            <tree>
-                <field name="titre" />
-                <field name="etudiant_id" />
-                <field name="etat" widget="statusbar" />
-                <field name="date_creation" />
+            <tree string="Réclamations" sample="1">
+                <field name="titre" string="Titre" />
+                <field name="etudiant_id" string="Étudiant" />
+                <field name="etat" string="État" widget="badge"
+                    decoration-danger="etat=='rejetee'"
+                    decoration-success="etat=='traitee'"
+                    decoration-info="etat=='en_cours'"
+                    decoration-warning="etat=='nouvelle'" />
+                <field name="date_creation" string="Date de création" />
+                <field name="admin_id" string="Administrateur" />
             </tree>
         </field>
     </record>
 
-    <record id="view_reclamation_tree" model="ir.ui.view">
-        <field name="name">student.reclamation.tree</field>
+    <!-- Form View -->
+    <record id="view_reclamation_form" model="ir.ui.view">
+        <field name="name">student.reclamation.form</field>
         <field name="model">student.reclamation</field>
         <field name="arch" type="xml">
-            <tree string="All Reclamations" sample="1">
-                <field name="id" widget="handle" />  <!-- Ensures records appear -->
-                <field name="titre" string="Title" />
-                <field name="etudiant_id" string="Student" />
-                <field name="etat" string="Status" widget="badge"
-                    decoration-danger="etat=='rejetee'"
-                    decoration-success="etat=='traitee'"
-                    decoration-info="etat=='en_cours'" />
-                <field name="date_creation" string="Creation Date" />
-            </tree>
+            <form string="Réclamation">
+                <header>
+                    <field name="etat" widget="statusbar" 
+                           statusbar_visible="nouvelle,en_cours,traitee"/>
+                    <button name="action_prendre_en_charge" 
+                            string="Prendre en charge" 
+                            type="object" 
+                            class="btn-primary"
+                            attrs="{'invisible': [('etat', '!=', 'nouvelle')]}"
+                            groups="base.group_user"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="titre" required="1"/>
+                            <field name="etudiant_id" options="{'no_create': True}"/>
+                            <field name="date_creation" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="etat"/>
+                            <field name="admin_id" readonly="1"/>
+                            <field name="date_traitement" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description" required="1"/>
+                    </group>
+                    <group string="Pièce jointe" attrs="{'invisible': [('piece_jointe', '=', False)]}">
+                        <field name="piece_jointe" filename="nom_fichier"/>
+                        <field name="nom_fichier" invisible="1"/>
+                    </group>
+                    <group string="Réponse de l'administration" attrs="{'invisible': [('reponse_admin', '=', False)]}">
+                        <field name="reponse_admin" readonly="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
         </field>
     </record>
+
+    <!-- Search View -->
+    <record id="view_reclamation_search" model="ir.ui.view">
+        <field name="name">student.reclamation.search</field>
+        <field name="model">student.reclamation</field>
+        <field name="arch" type="xml">
+            <search string="Recherche Réclamations">
+                <field name="titre"/>
+                <field name="etudiant_id"/>
+                <field name="admin_id"/>
+                <filter name="nouvelles" string="Nouvelles" domain="[('etat', '=', 'nouvelle')]"/>
+                <filter name="en_cours" string="En cours" domain="[('etat', '=', 'en_cours')]"/>
+                <filter name="traitees" string="Traitées" domain="[('etat', '=', 'traitee')]"/>
+                <filter name="rejetees" string="Rejetées" domain="[('etat', '=', 'rejetee')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_etat" string="État" domain="[]" context="{'group_by': 'etat'}"/>
+                    <filter name="group_etudiant" string="Étudiant" domain="[]" context="{'group_by': 'etudiant_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Internal Users (Admins) -->
+    <record id="espace_etudiant.action_student_reclamation" model="ir.actions.act_window">
+        <field name="name">Réclamations</field>
+        <field name="res_model">student.reclamation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_reclamation_tree"/>
+        <field name="search_view_id" ref="view_reclamation_search"/>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune réclamation trouvée
+            </p>
+            <p>
+                Ici vous pouvez gérer toutes les réclamations des étudiants.
+            </p>
+        </field>
+    </record>
+
+    <!-- Separate Action for Portal Users -->
+    <record id="action_student_reclamation_portal" model="ir.actions.act_window">
+        <field name="name">Mes Réclamations</field>
+        <field name="res_model">student.reclamation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_reclamation_tree"/>
+        <field name="search_view_id" ref="view_reclamation_search"/>
+        <field name="context">{}</field>
+        <field name="domain">[]</field> <!-- Record rules will handle filtering -->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune réclamation trouvée
+            </p>
+            <p>
+                Cliquez sur "Créer" pour soumettre une nouvelle réclamation.
+            </p>
+        </field>
+    </record>
+
 </odoo>

@@ -13,10 +13,12 @@
     'category': 'Education',
     'depends': ['base' ,
                 'mail',
-                'website'],
+                'website',
+                'portal'],
     'data': [
     # Sécurité
     'security/ir.model.access.csv',
+    'security/security.xml',
 
     # Modèles de base
     'views/programme_action.xml',

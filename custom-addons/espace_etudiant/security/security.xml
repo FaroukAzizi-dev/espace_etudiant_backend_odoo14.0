@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Record rule for portal users (students) - they can only see their own reclamations -->
+        <record id="rule_student_reclamation_portal_user" model="ir.rule">
+            <field name="name">Student Reclamation: Portal Users Own Records</field>
+            <field name="model_id" ref="model_student_reclamation"/>
+            <field name="domain_force">[('etudiant_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Record rule for internal users - they can see all reclamations -->
+        <record id="rule_student_reclamation_internal_user" model="ir.rule">
+            <field name="name">Student Reclamation: Internal Users All Records</field>
+            <field name="model_id" ref="model_student_reclamation"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Record rule for system administrators - they can see and do everything -->
+        <record id="rule_student_reclamation_system_admin" model="ir.rule">
+            <field name="name">Student Reclamation: System Admin All Records</field>
+            <field name="model_id" ref="model_student_reclamation"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Temporary debug rule - shows all records to everyone (REMOVE AFTER TESTING) -->
+        <record id="rule_student_reclamation_debug_all" model="ir.rule">
+            <field name="name">DEBUG: Show All Reclamations to Everyone</field>
+            <field name="model_id" ref="model_student_reclamation"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_public'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Record rule for student etudiant model for portal users -->
+        <record id="rule_student_etudiant_portal_user" model="ir.rule">
+            <field name="name">Student Etudiant: Portal Users Own Records</field>
+            <field name="model_id" ref="espace_etudiant.model_student_etudiant"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Record rule for student etudiant model for internal users -->
+        <record id="rule_student_etudiant_internal_user" model="ir.rule">
+            <field name="name">Student Etudiant: Internal Users All Records</field>
+            <field name="model_id" ref="espace_etudiant.model_student_etudiant"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

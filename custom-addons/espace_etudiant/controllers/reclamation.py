@@ -11,6 +11,11 @@ class ReclamationController(http.Controller):
     @http.route('/web/api/etudiant/reclamations', auth='user', type='http', methods=['GET'], website=True, cors='*')
     def list_reclamations(self, **kwargs):
         try:
+            # Check if user is authenticated
+            if not request.env.user or request.env.user._is_public():
+                headers = [('Content-Type', 'application/json'), ('Status', '401')]
+                return request.make_response(json.dumps({'error': 'Authentication required'}), headers)
+            
             Etudiant = request.env['student.etudiant']
             etudiant = Etudiant.search([('user_id', '=', request.env.user.id)], limit=1)
             
@@ -18,6 +23,7 @@ class ReclamationController(http.Controller):
                 headers = [('Content-Type', 'application/json'), ('Status', '404')]
                 return request.make_response(json.dumps({'error': 'Student not found'}), headers)
             
+            # Use sudo() with caution - only for reading own records
             reclamations = request.env['student.reclamation'].search([('etudiant_id', '=', etudiant.id)])
             
             result = []
@@ -26,15 +32,15 @@ class ReclamationController(http.Controller):
                     'id': rec.id,
                     'titre': rec.titre,
                     'description': rec.description,
-                    'etat': rec.etat,  # Fixed typo from 'etat' (was 'etat')
-                    'date_creation': rec.date_creation,
+                    'etat': rec.etat,
+                    'date_creation': rec.date_creation.isoformat() if rec.date_creation else '',
                     'reponse_admin': rec.reponse_admin or '',
-                    'date_traitement': rec.date_traitement or '',
+                    'date_traitement': rec.date_traitement.isoformat() if rec.date_traitement else '',
                     'admin': rec.admin_id.name if rec.admin_id else ''
                 })
             
             return request.make_response(
-                json.dumps(result),
+                json.dumps(result, default=str),
                 [('Content-Type', 'application/json')]
             )
         except Exception as e:
@@ -53,6 +59,11 @@ class ReclamationController(http.Controller):
         try:
             _logger.info("Received reclamation creation request with data: %s", post)
             
+            # Check if user is authenticated
+            if not request.env.user or request.env.user._is_public():
+                headers = [('Content-Type', 'application/json'), ('Status', '401')]
+                return request.make_response(json.dumps({'error': 'Authentication required'}), headers)
+            
             Etudiant = request.env['student.etudiant']
             etudiant = Etudiant.search([('user_id', '=', request.env.user.id)], limit=1)
             
@@ -68,6 +79,7 @@ class ReclamationController(http.Controller):
                 piece_jointe = base64.b64encode(file.read())
                 nom_fichier = file.filename
             
+            # Force commit to ensure the record is created
             reclamation = request.env['student.reclamation'].create({
                 'etudiant_id': etudiant.id,
                 'titre': post.get('titre'),
@@ -76,6 +88,9 @@ class ReclamationController(http.Controller):
                 'nom_fichier': nom_fichier,
                 'etat': 'nouvelle'
             })
+            
+            # Commit the transaction
+            request.env.cr.commit()
             
             _logger.info("Created reclamation with ID: %s", reclamation.id)
             
@@ -89,5 +104,7 @@ class ReclamationController(http.Controller):
             )
         except Exception as e:
             _logger.error("Error creating reclamation: %s", str(e))
+            # Rollback on error
+            request.env.cr.rollback()
             headers = [('Content-Type', 'application/json'), ('Status', '500')]
             return request.make_response(json.dumps({'error': str(e)}), headers)
