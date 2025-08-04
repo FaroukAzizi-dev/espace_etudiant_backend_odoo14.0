@@ -1,6 +1,3 @@
-# ===============================================
-# 1. CONTRÔLEUR PYTHON CORRIGÉ (paste.txt)
-# ===============================================
 
 from odoo import http
 from odoo.http import request
@@ -70,54 +67,54 @@ class ReclamationController(http.Controller):
                type='http', 
                methods=['POST'], 
                website=True, 
-               csrf=True,  # ✅ CSRF activé
+               csrf=False,  # ✅ CSRF activé
                cors='*')
-    def create_reclamation(self, **post):
+    def create_reclamation(self, **kwargs):
         try:
-            # Validation des données
-            if not post.get('titre') or not post.get('description'):
+            # Récupération sécurisée des champs depuis le formulaire
+            titre = request.httprequest.form.get('titre')
+            description = request.httprequest.form.get('description')
+
+            if not titre or not description:
                 return self._error_response({
                     'error': 'Le titre et la description sont requis'
                 }, 400)
-            
-            # Check authentication
+
             etudiant = self._get_current_student()
             if not etudiant:
-                return self._error_response({'error': 'Student not found'}, 404)
-            
-            # Handle file upload
+                return self._error_response({'error': 'Étudiant non trouvé'}, 404)
+
+            # Gestion du fichier
             piece_jointe = None
             nom_fichier = None
             if 'piece_jointe' in request.httprequest.files:
                 file = request.httprequest.files['piece_jointe']
-                if file.filename:  # Vérifier que le fichier existe
+                if file.filename:
                     piece_jointe = base64.b64encode(file.read())
                     nom_fichier = file.filename
-            
-            # Create reclamation (sans commit manuel - Odoo le gère)
+
+            # Création de la réclamation
             reclamation = request.env['student.reclamation'].create({
                 'etudiant_id': etudiant.id,
-                'titre': post.get('titre'),
-                'description': post.get('description'),
+                'titre': titre,
+                'description': description,
                 'piece_jointe': piece_jointe,
                 'nom_fichier': nom_fichier,
                 'etat': 'nouvelle'
             })
-            
-            _logger.info("Created reclamation with ID: %s for student: %s", 
-                        reclamation.id, etudiant.name)
-            
+
+            _logger.info("Réclamation créée avec ID: %s par l'étudiant: %s",
+                         reclamation.id, etudiant.name)
+
             return self._success_response({
-                'success': True, 
+                'success': True,
                 'reclamation_id': reclamation.id,
                 'message': 'Réclamation créée avec succès'
             })
-            
+
         except Exception as e:
-            _logger.error("Error creating reclamation: %s", str(e))
+            _logger.error("Erreur lors de la création de la réclamation: %s", str(e))
             return self._error_response({'error': 'Erreur lors de la création'}, 500)
 
 
-# ===============================================
-# 2. SERVICE ANGULAR AMÉLIORÉ
-# ===============================================
+
