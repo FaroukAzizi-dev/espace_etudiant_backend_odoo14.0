@@ -67,7 +67,7 @@ class ReclamationController(http.Controller):
                type='http', 
                methods=['POST'], 
                website=True, 
-               csrf=False,  # ✅ CSRF activé
+               csrf=False,
                cors='*')
     def create_reclamation(self, **kwargs):
         try:
