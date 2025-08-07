@@ -1,4 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+<<<<<<< HEAD
 access_student_etudiant_portal,access_student_etudiant_portal,espace_etudiant.model_student_etudiant,base.group_portal,1,1,1,0
 access_student_etudiant_user,access_student_etudiant_user,espace_etudiant.model_student_etudiant,base.group_user,1,1,1,1
 access_student_etudiant_system,access_student_etudiant_system,espace_etudiant.model_student_etudiant,base.group_system,1,1,1,1
@@ -22,3 +23,7 @@ access_student_job_offer_manager,access_student_job_offer_manager,model_student_
 access_student_internship_offer_portal,access_student_internship_offer_portal,model_student_internship_offer,base.group_portal,1,0,0,0
 access_student_internship_offer_user,access_student_internship_offer_user,model_student_internship_offer,base.group_user,1,1,1,0
 access_student_internship_offer_manager,access_student_internship_offer_manager,model_student_internship_offer,base.group_erp_manager,1,1,1,1
+
+access_student_enseignant,student.enseignant,model_student_enseignant,base.group_user,1,1,1,1
+
+

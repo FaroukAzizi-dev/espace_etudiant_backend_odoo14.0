@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Vue formulaire -->
+    <record id="view_student_absence_form" model="ir.ui.view">
+        <field name="name">student.absence.form</field>
+        <field name="model">student.absence</field>
+        <field name="arch" type="xml">
+            <form string="Absence">
+                <sheet>
+                    <group>
+                        <field name="etudiant_id"/>
+                        <field name="enseignant_id"/>
+                        <field name="heure_debut"/>
+                        <field name="heure_fin"/>
+                        <field name="justifiee"/>
+                        <field name="motif"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue liste -->
+    <record id="view_student_absence_tree" model="ir.ui.view">
+        <field name="name">student.absence.tree</field>
+        <field name="model">student.absence</field>
+        <field name="arch" type="xml">
+            <tree string="Absences">
+                <field name="etudiant_id"/>
+                <field name="enseignant_id"/>
+                <field name="heure_debut"/>
+                <field name="heure_fin"/>
+                <field name="justifiee"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_student_absence" model="ir.actions.act_window">
+        <field name="name">Absences</field>
+        <field name="res_model">student.absence</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+</odoo>

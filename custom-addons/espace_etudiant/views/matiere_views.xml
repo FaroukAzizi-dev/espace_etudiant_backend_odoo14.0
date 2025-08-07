@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+
     <!-- Vue formulaire Matière -->
     <record id="view_matiere_form" model="ir.ui.view">
         <field name="name">student.matiere.form</field>
@@ -53,6 +54,7 @@
         <field name="model">student.matiere</field>
         <field name="arch" type="xml">
             <tree string="Matières">
+
                 <field name="name" />
                 <field name="code" />
                 <field name="semestre" />
@@ -63,6 +65,7 @@
                 <field name="enseignant_id" />
                 <field name="classe_id" />
                 <field name="active" />
+
             </tree>
         </field>
     </record>
@@ -73,18 +76,21 @@
         <field name="model">student.matiere</field>
         <field name="arch" type="xml">
             <kanban>
+
                 <field name="name" />
                 <field name="code" />
                 <field name="semestre" />
                 <field name="coefficient" />
                 <field name="enseignant_ids" />
                 <field name="classe_id" />
+
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_card">
                             <div class="oe_kanban_content">
                                 <div class="oe_kanban_details">
                                     <strong class="o_kanban_record_title">
+
                                         <field name="name" />
                                     </strong>
                                     <div class="o_kanban_record_subtitle">
@@ -96,6 +102,7 @@
                                         <div class="mt8">
                                             <strong>Enseignants:</strong>
                                             <field name="enseignant_ids" widget="many2many_tags" />
+
                                         </div>
                                     </div>
                                 </div>
@@ -106,6 +113,7 @@
             </kanban>
         </field>
 
+
     </record>
 
 
@@ -115,6 +123,7 @@
         <field name="model">student.matiere</field>
         <field name="arch" type="xml">
             <search string="Rechercher Matières">
+
                 <field name="name" string="Nom" />
                 <field name="code" string="Code" />
                 <field name="enseignant_ids" string="Enseignants" />
@@ -133,6 +142,7 @@
                         context="{'group_by': 'classe_id'}" />
                     <filter string="Enseignant principal" name="group_by_enseignant"
                         context="{'group_by': 'enseignant_id'}" />
+
                 </group>
             </search>
         </field>
@@ -143,6 +153,7 @@
         <field name="name">Matières</field>
         <field name="res_model">student.matiere</field>
         <field name="view_mode">tree,kanban,form,graph</field>
+
         <field name="view_id" ref="view_matiere_tree" />
         <field name="search_view_id" ref="view_matiere_search" />
         <field name="context">{}</field>
@@ -154,6 +165,7 @@
                 Ajoutez les matières enseignées dans votre établissement.
                 Vous pouvez assigner plusieurs enseignants à chaque matière.
             </p>
+
         </field>
     </record>
 </odoo>

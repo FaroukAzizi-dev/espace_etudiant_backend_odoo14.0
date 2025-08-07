@@ -25,12 +25,15 @@ class Student(models.Model):
     telephone = fields.Char(string="Téléphone")
     email_personnel = fields.Char(string="Email personnel")
     
+
     # Attributs académiques
     nb_credits = fields.Integer(string="Nombre de crédits")
     moyenne = fields.Float(string="Moyenne")
     rang = fields.Integer(string="Rang")
     classe_id = fields.Many2one('student.classe', string="Classe")
+
     date_inscription = fields.Date(string="Date d'inscription", default=fields.Date.today)
+
     statut = fields.Selection([
         ('active', 'Actif'),
         ('inactive', 'Inactif'),
@@ -42,15 +45,18 @@ class Student(models.Model):
     filiere_id = fields.Many2one('student.filiere', string="Filière")
     niveau_id = fields.Many2one('student.niveau', string="Niveau")
 
+
     # Documents et relations
     document_ids = fields.One2many('student.document', 'etudiant_id', string="Documents")
     absence_ids = fields.One2many('student.absence', 'etudiant_id', string="Absences")
     note_ids = fields.One2many('student.note', 'etudiant_id', string="Notes")
     reclamation_ids = fields.One2many('student.reclamation', 'etudiant_id', string="Réclamations")
-    
+
     # Academic records
+
     academic_records_ids = fields.One2many('student.academic.record', 'etudiant_id', string="Historique Académique")
     
+
     active = fields.Boolean(default=True)
     
     # --- Contraintes SQL pour l'unicité ---
@@ -84,6 +90,7 @@ class Student(models.Model):
     @api.model
     def create(self, vals):
         if 'partner_id' not in vals:
+
             full_name = f"{vals.get('first_name', '')} {vals.get('last_name', '')}".strip()
             partner = self.env['res.partner'].create({
                 'name': full_name or 'Nouveau Étudiant',
@@ -112,6 +119,8 @@ class Student(models.Model):
                 })
                 student.user_id = user.id
 
+
+
 class AcademicRecord(models.Model):
     _name = 'student.academic.record'
     _description = 'Historique academique de etudiant'
@@ -119,5 +128,7 @@ class AcademicRecord(models.Model):
     etudiant_id = fields.Many2one('student.etudiant', string="Étudiant", required=True, ondelete='cascade')
     moyenne = fields.Float(string="Moyenne")
     rang = fields.Integer(string="Rang")
+
     nb_credits = fields.Integer(string="Nombre de crédits")
     annee_universitaire = fields.Char(string="Année universitaire")
+

@@ -11,6 +11,7 @@
     'author': 'Farouk Azizi , Said Laffet',
     'website': 'https://example.com',
     'category': 'Education',
+
     'depends': ['base' ,
                 'mail',
                 'website',
@@ -33,18 +34,23 @@
     'views/enseignant.xml',
     'views/student_action.xml',
     'views/classe_action.xml',
+
     'views/timetable.xml',
     'views/timing.xml',
     'views/offre_emploi.xml',
     'views/offre_stage.xml',
   
 
-    # Menus
+
+
+    'views/student_absence_views.xml',
+
     'views/student_menu.xml',
     ],
 
     'cors_enabled': True,
 
+    'controllers': ['controllers/auth_controller.py'],
     'installable': True,
     'auto_install': False,
     'application': True,

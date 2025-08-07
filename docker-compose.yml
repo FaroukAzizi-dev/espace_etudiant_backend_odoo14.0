@@ -23,6 +23,7 @@ services:
 
     ports:
       - "8070:8069"
+
     networks:
       odoo_network_compta:
         ipv4_address: 172.28.0.3
