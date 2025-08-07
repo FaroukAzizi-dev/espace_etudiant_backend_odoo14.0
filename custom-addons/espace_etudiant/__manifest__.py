@@ -29,13 +29,17 @@
     'views/enseignant.xml',
     'views/student_action.xml',
     'views/classe_action.xml',
+    'views/student_absence_views.xml',
+    'views/timetable.xml',
+    'views/timing.xml',
+
     
     # Menus last
     'views/student_menu.xml',
     ],
 
 
-
+    'controllers': ['controllers/auth_controller.py'],
     'installable': True,
     'auto_install': False,
     'application': True,

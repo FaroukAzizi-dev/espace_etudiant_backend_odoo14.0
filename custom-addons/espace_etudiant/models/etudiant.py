@@ -21,6 +21,7 @@ class Student(models.Model):
     adresse_domicile = fields.Char(string="Adresse domicile")
     telephone = fields.Char(string="Téléphone")
     email_personnel = fields.Char(string="Email personnel")
+    
 
 
 

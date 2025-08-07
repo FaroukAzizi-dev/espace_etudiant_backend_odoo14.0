@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_student_session_kanban" model="ir.ui.view">
+        <field name="name">student.session.kanban</field>
+        <field name="model">student.session</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="type" class="o_kanban_small_column">
+                <!-- 🔁 TOUS les champs utilisés dans la carte doivent être déclarés ici -->
+                <field name="type" />
+                <field name="color" />
+                <field name="enseignant_id" />
+                <field name="matiere_id" />
+                <field name="classe_id" />
+                <field name="timing_id" />
+                <field name="start_datetime" />
+                <field name="end_datetime" />
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div
+                            t-attf-class="#{kanban_color(record.color.value)} oe_kanban_global_click">
+                            <div class="o_dropdown_kanban dropdown">
+                                <a class="dropdown-toggle btn" data-toggle="dropdown" href="#"
+                                    role="button">
+                                    <span class="fa fa-bars fa-lg" title="Session" />
+                                </a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <t t-if="widget.editable">
+                                        <li>
+                                            <a type="edit">Edit</a>
+                                        </li>
+                                    </t>
+                                    <t t-if="widget.deletable">
+                                        <li>
+                                            <a type="delete">Delete</a>
+                                        </li>
+                                    </t>
+                                    <li>
+                                        <ul class="oe_kanban_colorpicker" data-field="color" />
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="oe_kanban_content">
+                                <div>
+                                    <strong>
+                                        <field name="timing_id" />
+                                    </strong>
+                                </div>
+
+                                <div class="oe_kanban_left">
+                                    <t t-if="record.enseignant_id.value">
+                                        <div>
+                                            <b>Enseignant:</b>
+                                            <field name="enseignant_id" />
+                                        </div>
+                                    </t>
+                                    <t t-if="record.matiere_id.value">
+                                        <div>
+                                            <b>Subject:</b>
+                                            <field name="matiere_id" />
+                                        </div>
+                                    </t>
+                                    <t t-if="record.classe_id.value">
+                                        <div>
+                                            <b>Class:</b>
+                                            <field name="classe_id" />
+                                        </div>
+                                    </t>
+                                    <t t-if="record.start_datetime.value">
+                                        <div>
+                                            <b>Start:</b>
+                                            <field name="start_datetime" />
+                                        </div>
+                                    </t>
+                                    <t t-if="record.end_datetime.value">
+                                        <div>
+                                            <b>End:</b>
+                                            <field name="end_datetime" />
+                                        </div>
+                                    </t>
+                                </div>
+
+                                <div class="oe_kanban_bottom_right">
+                                    <img
+                                        t-att-src="kanban_image('student.enseignant', 'image_128', record.enseignant_id.value)"
+                                        class="oe_kanban_avatar"
+                                        style="max-height: 80px; border-radius: 50%;"
+                                        alt="Photo enseignant" />
+                                </div>
+                                <div class="oe_clear"></div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
+    <!-- Form view -->
+    <record id="view_student_session_form" model="ir.ui.view">
+        <field name="name">student.session.form</field>
+        <field name="model">student.session</field>
+        <field name="arch" type="xml">
+            <form string="Session" class="oe_title">
+                <header>
+                    <button name="lecture_confirm" type="object" states="draft" string="Confirm"
+                        class="btn-primary" />
+                    <button name="lecture_draft" type="object" states="confirm"
+                        string="Set to Draft" />
+                    <button name="lecture_done" type="object" states="confirm" string="Done"
+                        class="btn-success" />
+                    <button name="lecture_cancel" type="object" states="draft,confirm"
+                        string="Cancel" class="btn-danger" />
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,confirm,done,cancel" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1" />
+                        <field name="type" readonly="1" invisible="1" />
+                    </group>
+                    <group string="Timing">
+                        <field name="timing_id" />
+                        <field name="start_datetime" />
+                        <field name="end_datetime" />
+                        <field name="color" widget="colorpicker" />
+                    </group>
+                    <group string="Academic">
+                        <field name="matiere_id" />
+                        <field name="enseignant_id" />
+                        <field name="classe_id" />
+                        <field name="active" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Calendar view -->
+    <record id="view_student_session_calendar" model="ir.ui.view">
+        <field name="name">student.session.calendar</field>
+        <field name="model">student.session</field>
+        <field name="arch" type="xml">
+            <calendar string="Session Calendar" color="enseignant_id" date_start="start_datetime"
+                date_stop="end_datetime" mode="week">
+                <field name="name" />
+                <field name="matiere_id" />
+                <field name="classe_id" />
+                <field name="state" />
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Window action -->
+    <record id="action_student_session" model="ir.actions.act_window">
+        <field name="name">Sessions</field>
+        <field name="res_model">student.session</field>
+        <field name="view_mode">tree,form,calendar,kanban</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create the first session</p>
+        </field>
+    </record>
+
+    <!-- Record Rule for students: see only sessions of their classes -->
+    <record id="student_session_rule_students" model="ir.rule">
+        <field name="name">Sessions visibles par les étudiants</field>
+        <field name="model_id" ref="model_student_session" />
+        <field name="domain_force">
+            <![CDATA[
+                ['|',
+                 ('classe_id', 'in', user.student_ids.mapped('classe_id').ids),
+                 ('enseignant_id.user_id', '=', user.id)]
+            ]]>
+        </field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]" /> <!-- remplace par le groupe
+        étudiant spécifique si existant -->
+    </record>
+
+</odoo>

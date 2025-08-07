@@ -9,6 +9,7 @@ class Enseignant(models.Model):
     partner_id = fields.Many2one('res.partner', required=True, ondelete='cascade', string="Contact")
     user_id = fields.Many2one('res.users', string="Utilisateur lié", readonly=True)
     
+    
     # Image directement sur l'enseignant
     image_128 = fields.Image("Image", max_width=128, max_height=128)
     
@@ -19,7 +20,7 @@ class Enseignant(models.Model):
     identifiant = fields.Char(string="Identifiant", required=True, unique=True)
     telephone = fields.Char(string="Téléphone", related='partner_id.phone', store=True, readonly=False)
     adresse = fields.Char(string="Adresse", related='partner_id.street', store=True, readonly=False)
-    cin = fields.Char(string="CIN")
+    cin = fields.Char(string="CIN", required=True)  # Ajout de required=True pour le CIN
     date_naissance = fields.Date(string="Date de naissance")
     
     # Champs professionnels
@@ -28,37 +29,41 @@ class Enseignant(models.Model):
     specialite = fields.Char(string="Spécialité")
     date_recrutement = fields.Date(string="Date de recrutement")
     
-
-
-    # Dans student.enseignant
+    # Relations
     classe_ids = fields.Many2many(
         'student.classe',
-        'enseignant_classe_rel',  # nom table relationnelle, à choisir
+        'enseignant_classe_rel',
         'enseignant_id',
         'classe_id',
         string="Classes"
     )
     
-    # Relations
     note_ids = fields.One2many('student.note', 'enseignant_id', string="Notes")
     absence_ids = fields.One2many('student.absence', 'enseignant_id', string="Absences")
     reclamation_ids = fields.One2many('student.reclamation_prof', 'enseignant_id', string="Réclamations")
 
     matiere_ids = fields.Many2many(
-    'student.matiere',
-    'matiere_enseignant_rel',  # table relationnelle
-    'enseignant_id',                   # champ pour ce modèle
-    'matiere_id',                      # champ pour l'autre modèle
-    string="Matières enseignées"
-)
+        'student.matiere',
+        'matiere_enseignant_rel',
+        'enseignant_id',
+        'matiere_id',
+        string="Matières enseignées"
+    )
 
-    
     @api.constrains('image_128')
     def _check_image_required(self):
         for rec in self:
             if not rec.image_128:
                 raise ValidationError("Chaque enseignant doit avoir une image.")
-    
+
+    @api.constrains('email', 'cin')
+    def _check_email_cin_required(self):
+        for rec in self:
+            if not rec.email:
+                raise ValidationError("L'email est obligatoire pour créer le compte utilisateur.")
+            if not rec.cin:
+                raise ValidationError("Le CIN est obligatoire comme mot de passe.")
+
     @api.model
     def create(self, vals):
         if 'partner_id' not in vals:
@@ -77,7 +82,6 @@ class Enseignant(models.Model):
         return enseignant
     
     def write(self, vals):
-        # Synchroniser l'image avec le partner si nécessaire
         if 'image_128' in vals and vals['image_128']:
             for record in self:
                 if record.partner_id:
@@ -88,17 +92,13 @@ class Enseignant(models.Model):
         User = self.env['res.users']
         teacher_group = self.env.ref('base.group_user')
         for teacher in self:
-            if not teacher.user_id:
-
-                login = teacher.identifiant or teacher.email or f'teacher{teacher.id}@example.com'
-                password = teacher.cin or 'changeme123'
-
+            if not teacher.user_id and teacher.email and teacher.cin:
                 user_vals = {
                     'name': teacher.partner_id.name,
-                    'login': login,
+                    'login': teacher.email,  # Utilisation de l'email comme login
+                    'password': teacher.cin,  # Utilisation du CIN comme mot de passe
                     'partner_id': teacher.partner_id.id,
                     'groups_id': [(6, 0, [teacher_group.id])],
-                    'password': password,
                 }
                 user = User.create(user_vals)
                 teacher.user_id = user.id

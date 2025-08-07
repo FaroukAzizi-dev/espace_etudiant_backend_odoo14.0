@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================= -->
+    <!--  Student Timing – tree view                                   -->
+    <!-- ============================================================= -->
+    <record id="view_student_timing_tree" model="ir.ui.view">
+        <field name="name">student.timing.tree</field>
+        <field name="model">student.timing</field>
+        <field name="arch" type="xml">
+            <tree string="Timings">
+                <field name="name"/>
+                <field name="hour"/>
+                <field name="minute"/>
+                <field name="am_pm"/>
+                <field name="duration"/>
+                <field name="sequence"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ============================================================= -->
+    <!--  Student Timing – form view                                   -->
+    <!-- ============================================================= -->
+    <record id="view_student_timing_form" model="ir.ui.view">
+        <field name="name">student.timing.form</field>
+        <field name="model">student.timing</field>
+        <field name="arch" type="xml">
+            <form string="Timing">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="hour"/>
+                        <field name="minute"/>
+                        <field name="am_pm"/>
+                        <field name="duration"/>
+                        <field name="sequence"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================= -->
+    <!--  Window action                                                -->
+    <!-- ============================================================= -->
+    <record id="action_student_timing" model="ir.actions.act_window">
+        <field name="name">Timings</field>
+        <field name="res_model">student.timing</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a new time slot</p>
+        </field>
+    </record>
+</odoo>
