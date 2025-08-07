@@ -19,3 +19,6 @@ from . import reclamation_prof
 from . import document
 from . import timetable
 from . import timing
+from . import event
+from . import offre_emploi
+from . import offre_stage

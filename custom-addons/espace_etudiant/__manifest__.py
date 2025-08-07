@@ -27,14 +27,16 @@
     'views/matiere_views.xml',
     'views/note.xml',
     'views/reclamation.xml',
-    
+    'views/event_views.xml',
+
     # Modèles dépendants
     'views/enseignant.xml',
     'views/student_action.xml',
     'views/classe_action.xml',
     'views/timetable.xml',
     'views/timing.xml',
-
+    'views/offre_emploi.xml',
+    'views/offre_stage.xml',
   
 
     # Menus

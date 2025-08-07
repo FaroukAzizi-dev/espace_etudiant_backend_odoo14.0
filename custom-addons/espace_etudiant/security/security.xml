@@ -122,5 +122,109 @@
             <field name="perm_unlink" eval="False" />
         </record>
 
+        <!-- Student Event Access Rules -->
+        <record id="rule_student_event_portal_user" model="ir.rule">
+            <field name="name">Student Event: Portal Users Read Only</field>
+            <field name="model_id" ref="model_student_event" />
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="False" />
+            <field name="perm_create" eval="False" />
+            <field name="perm_unlink" eval="False" />
+        </record>
+
+        <record id="rule_student_event_internal_user" model="ir.rule">
+            <field name="name">Student Event: Internal Users Basic Access</field>
+            <field name="model_id" ref="model_student_event" />
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="True" />
+            <field name="perm_create" eval="True" />
+            <field name="perm_unlink" eval="False" />
+        </record>
+
+        <record id="rule_student_event_manager" model="ir.rule">
+            <field name="name">Student Event: Managers Full Access</field>
+            <field name="model_id" ref="model_student_event" />
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_erp_manager'))]" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="True" />
+            <field name="perm_create" eval="True" />
+            <field name="perm_unlink" eval="True" />
+        </record>
+
+        <!-- Add these inside the <data> tag of your security XML file -->
+
+        <!-- Job Offer Access Rules -->
+        <record id="rule_student_job_offer_portal_user" model="ir.rule">
+            <field name="name">Student Job Offer: Portal Users Read Only</field>
+            <field name="model_id" ref="model_student_job_offer" />
+            <field name="domain_force">[('is_active','=',True)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="False" />
+            <field name="perm_create" eval="False" />
+            <field name="perm_unlink" eval="False" />
+        </record>
+
+        <record id="rule_student_job_offer_internal_user" model="ir.rule">
+            <field name="name">Student Job Offer: Internal Users Basic Access</field>
+            <field name="model_id" ref="model_student_job_offer" />
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="True" />
+            <field name="perm_create" eval="True" />
+            <field name="perm_unlink" eval="False" />
+        </record>
+
+        <record id="rule_student_job_offer_manager" model="ir.rule">
+            <field name="name">Student Job Offer: Managers Full Access</field>
+            <field name="model_id" ref="model_student_job_offer" />
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_erp_manager'))]" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="True" />
+            <field name="perm_create" eval="True" />
+            <field name="perm_unlink" eval="True" />
+        </record>
+
+        <!-- Internship Offer Access Rules -->
+        <record id="rule_student_internship_offer_portal_user" model="ir.rule">
+            <field name="name">Student Internship Offer: Portal Users Read Only</field>
+            <field name="model_id" ref="model_student_internship_offer" />
+            <field name="domain_force">[('is_active','=',True)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="False" />
+            <field name="perm_create" eval="False" />
+            <field name="perm_unlink" eval="False" />
+        </record>
+
+        <record id="rule_student_internship_offer_internal_user" model="ir.rule">
+            <field name="name">Student Internship Offer: Internal Users Basic Access</field>
+            <field name="model_id" ref="model_student_internship_offer" />
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="True" />
+            <field name="perm_create" eval="True" />
+            <field name="perm_unlink" eval="False" />
+        </record>
+
+        <record id="rule_student_internship_offer_manager" model="ir.rule">
+            <field name="name">Student Internship Offer: Managers Full Access</field>
+            <field name="model_id" ref="model_student_internship_offer" />
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_erp_manager'))]" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="True" />
+            <field name="perm_create" eval="True" />
+            <field name="perm_unlink" eval="True" />
+        </record>
+
     </data>
 </odoo>

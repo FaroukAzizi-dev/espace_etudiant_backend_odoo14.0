@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_job_offer_tree" model="ir.ui.view">
+        <field name="name">job.offer.tree</field>
+        <field name="model">student.job.offer</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="title"/>
+                <field name="company"/>
+                <field name="contract_type"/>
+                <field name="deadline"/>
+                <field name="is_active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_job_offer_form" model="ir.ui.view">
+        <field name="name">job.offer.form</field>
+        <field name="model">student.job.offer</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="title"/>
+                        <field name="company"/>
+                        <field name="contract_type"/>
+                        <field name="salary"/>
+                        <field name="deadline"/>
+                        <field name="contact_email"/>
+                        <field name="is_active"/>
+                    </group>
+                    <group>
+                        <field name="description" widget="html"/>
+                    </group>
+                    <group>
+                        <field name="requirements" widget="html"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_job_offer_search" model="ir.ui.view">
+        <field name="name">job.offer.search</field>
+        <field name="model">student.job.offer</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="title"/>
+                <field name="company"/>
+                <field name="contract_type"/>
+                <field name="is_active"/>
+                <filter string="Active Offers" name="active_offers" domain="[('is_active','=',True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action et menu -->
+    <record id="action_job_offer" model="ir.actions.act_window">
+        <field name="name">Job Offers</field>
+        <field name="res_model">student.job.offer</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>
