@@ -28,6 +28,7 @@
     'views/matiere_views.xml',
     'views/note.xml',
     'views/reclamation.xml',
+    'views/reclamation_prof.xml',
     'views/event_views.xml',
 
     # Modèles dépendants

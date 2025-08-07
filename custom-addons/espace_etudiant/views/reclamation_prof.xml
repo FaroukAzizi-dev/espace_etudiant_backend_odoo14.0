@@ -37,13 +37,13 @@
     </record>
 
    <record id="action_student_reclamation_prof" model="ir.actions.act_window">
-    <field name="name">Réclamations Enseignants</field>
-    <field name="res_model">student.reclamation_prof</field>
-    <field name="view_mode">tree,form</field>
-    <field name="domain">[('enseignant_id.user_id.id', '=', uid)]</field>
-    <field name="view_ids" eval="[(5, 0, 0),
-        (0, 0, {'view_mode': 'tree', 'view_id': ref('view_student_reclamation_prof_tree')}),
-        (0, 0, {'view_mode': 'form', 'view_id': ref('view_student_reclamation_prof_form')})]"/>
-</record>
+        <field name="name">Réclamations Enseignants</field>
+        <field name="res_model">student.reclamation_prof</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('enseignant_id.user_id', '=', uid)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('view_student_reclamation_prof_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_student_reclamation_prof_form')})]"/>
+    </record>
 
 </odoo>

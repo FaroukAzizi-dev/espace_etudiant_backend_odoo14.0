@@ -23,12 +23,7 @@
         action="espace_etudiant.action_student_notes"
         sequence="10" />
 
-    <!-- Menu Absences - NOUVEAU -->
-    <menuitem id="menu_student_absence"
-              name="Absences"
-              parent="menu_student_portal_root"
-              action="action_student_absence"
-              sequence="35"/>
+
 
     <menuitem id="menu_student_configuration"
         name="Configuration"
@@ -43,18 +38,27 @@
     </menuitem>   
 
     <menuitem
-        id="menu_student_timetable"
-        name="Emploi du Temps"
+        id="menu_student_absence"
+        name="Absence"
         parent="menu_student_portal_root"
-        action="espace_etudiant.action_student_session"
+        action="espace_etudiant.action_student_absence"
         sequence="10">
-    </menuitem>
+    </menuitem>  
 
     <menuitem
         id="menu_student_reclamation"
-        name="Reclamation"
+        name="Reclamation Etudiant"
         parent="menu_student_portal_root"
         action="espace_etudiant.action_student_reclamation"
+        sequence="10">
+    </menuitem>
+
+    
+    <menuitem
+        id="menu_student_reclamation_prof"
+        name="Reclamation Enseignant"
+        parent="menu_student_portal_root"
+        action="espace_etudiant.action_student_reclamation_prof"
         sequence="10">
     </menuitem>
 
@@ -102,12 +106,13 @@
         parent="menu_student_configuration"
         action="action_student_filiere"
         sequence="10" />
-    <!-- Menu -->
+
     <menuitem id="menu_student_niveau"
         name="Niveaux"
         parent="menu_student_configuration"
         action="action_student_niveau"
         sequence="10" />
+
     <menuitem
         id="menu_student_matiere"
         name="Matiere"
@@ -115,6 +120,7 @@
         action="action_student_matiere"
         sequence="10">
     </menuitem>
+
      <menuitem 
         id="menu_student_timing" 
         name="Timings" 
@@ -123,13 +129,6 @@
         sequence="10">
     </menuitem>
 
-    <menuitem
-        id="menu_student_timing"
-        name="Timings"
-        parent="menu_student_configuration"
-        action="action_student_timing"
-        sequence="10">
-    </menuitem>
 
 
 </odoo>
