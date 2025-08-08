@@ -4,10 +4,9 @@ import json
 
 class ScheduleController(http.Controller):
     
-    @http.route('/api/student-schedule', type='http', auth='user', methods=['GET', 'POST'], csrf=False)
+    @http.route('/api/student-schedule', type='http', auth='user', methods=['GET'], csrf=False)  # ← GET uniquement
     def get_student_schedule(self, **params):
         try:
-            # Get current student linked to the user
             student = request.env['student.etudiant'].sudo().search([
                 ('user_id', '=', request.env.user.id)
             ], limit=1)
@@ -16,12 +15,10 @@ class ScheduleController(http.Controller):
                 return Response(json.dumps({"error": "Student not found", "sessions": []}),
                               content_type='application/json')
             
-            # Get the student's class
             if not student.classe_id:
                 return Response(json.dumps({"error": "Student has no assigned class", "sessions": []}),
                               content_type='application/json')
             
-            # Get all sessions for the student's class
             sessions = request.env['student.session'].sudo().search([
                 ('classe_id', '=', student.classe_id.id),
                 ('state', 'in', ['confirm', 'done'])

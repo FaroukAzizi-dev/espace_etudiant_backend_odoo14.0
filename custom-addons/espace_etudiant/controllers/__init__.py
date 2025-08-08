@@ -3,7 +3,6 @@ from . import studentApi
 from . import ScheduleController
 from . import eventApi
 from . import offre_stage_emploi_Api
-
 from . import main
 from . import auth_controller
 from . import note_controller
