@@ -11,4 +11,5 @@ class StudentEvent(models.Model):
     end_date = fields.Datetime('Date de fin', required=True)
     location = fields.Char('Lieu')
     image = fields.Binary('Image')
+    lien = fields.Char('lien')
     active = fields.Boolean('Actif', default=True)

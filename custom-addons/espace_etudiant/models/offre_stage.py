@@ -12,4 +12,5 @@ class InternshipOffer(models.Model):
     remuneration = fields.Char('Rémunération')
     deadline = fields.Date('Date limite')
     contact_email = fields.Char('Email de contact')
+    lien = fields.Char('lien')
     is_active = fields.Boolean('Active', default=True)

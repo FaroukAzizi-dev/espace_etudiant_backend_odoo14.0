@@ -35,6 +35,7 @@ class StudentEventAPI(http.Controller):
                     'start_date': event.start_date.strftime('%Y-%m-%d %H:%M:%S'),
                     'end_date': event.end_date.strftime('%Y-%m-%d %H:%M:%S') if event.end_date else None,
                     'location': event.location,
+                    'lien' : event.lien
                 }
                 
                 # Ajouter l'image si elle existe

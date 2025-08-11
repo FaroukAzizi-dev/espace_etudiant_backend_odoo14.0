@@ -29,7 +29,7 @@ class ReclamationController(http.Controller):
             [('Content-Type', 'application/json')]
         )
 
-    @http.route('/web/api/etudiant/reclamations', auth='user', type='http', methods=['GET'], website=True, cors='*')
+    @http.route('/api/etudiant/reclamations', auth='user', type='http', methods=['GET'], website=True, cors='*')
     def list_reclamations(self, **kwargs):
         try:
             etudiant = self._get_current_student()
@@ -62,7 +62,7 @@ class ReclamationController(http.Controller):
             _logger.error("Error fetching reclamations: %s", str(e))
             return self._error_response({'error': str(e)}, 500)
 
-    @http.route('/web/api/etudiant/reclamations/create', 
+    @http.route('/api/etudiant/reclamations/create', 
                auth='user', 
                type='http', 
                methods=['POST'], 

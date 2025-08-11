@@ -38,7 +38,7 @@ class OfferController(http.Controller):
         try:
             domain = [('is_active', '=', True)]
             fields = ['id', 'title', 'company', 'duration', 'description', 
-                     'requirements', 'remuneration', 'deadline', 'contact_email']
+                     'requirements', 'remuneration', 'deadline', 'contact_email','lien']
             
             offers = request.env['student.internship.offer'].search_read(domain, fields)
             serialized_offers = [self._serialize_offer(offer) for offer in offers]
@@ -54,7 +54,7 @@ class OfferController(http.Controller):
         try:
             domain = [('is_active', '=', True)]
             fields = ['id', 'title', 'company', 'contract_type', 'description',
-                     'requirements', 'salary', 'deadline', 'contact_email']
+                     'requirements', 'salary', 'deadline', 'contact_email','lien']
             
             if 'contract_type' in kw:
                 domain.append(('contract_type', '=', kw['contract_type']))
