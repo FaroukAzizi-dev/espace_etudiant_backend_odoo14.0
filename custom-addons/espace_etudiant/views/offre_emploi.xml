@@ -9,6 +9,7 @@
                 <field name="company"/>
                 <field name="contract_type"/>
                 <field name="deadline"/>
+                <field name="lien"/>
                 <field name="is_active"/>
             </tree>
         </field>
@@ -26,6 +27,7 @@
                         <field name="contract_type"/>
                         <field name="salary"/>
                         <field name="deadline"/>
+                        <field name="lien"/>
                         <field name="contact_email"/>
                         <field name="is_active"/>
                     </group>

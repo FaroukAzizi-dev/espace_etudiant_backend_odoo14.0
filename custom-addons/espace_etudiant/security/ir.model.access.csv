@@ -26,4 +26,6 @@ access_student_internship_offer_manager,access_student_internship_offer_manager,
 
 access_student_enseignant,student.enseignant,model_student_enseignant,base.group_user,1,1,1,1
 
-
+access_student_absence_portal,access_student_absence_portal,model_student_absence,base.group_portal,1,0,0,0
+access_student_absence_user,access_student_absence_user,model_student_absence,base.group_user,1,1,1,0
+access_student_absence_manager,access_student_absence_manager,model_student_absence,base.group_erp_manager,1,1,1,1
