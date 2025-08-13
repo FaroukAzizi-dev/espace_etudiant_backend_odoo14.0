@@ -24,7 +24,6 @@
         sequence="10" />
 
 
-
     <menuitem id="menu_student_configuration"
         name="Configuration"
         parent="menu_student_portal_root"
@@ -35,7 +34,7 @@
         parent="menu_student_portal_root"
         action="espace_etudiant.action_student_session"
         sequence="10">
-    </menuitem>   
+    </menuitem>
 
     <menuitem
         id="menu_student_absence"
@@ -43,7 +42,7 @@
         parent="menu_student_portal_root"
         action="espace_etudiant.action_student_absence"
         sequence="10">
-    </menuitem>  
+    </menuitem>
 
     <menuitem
         id="menu_student_reclamation"
@@ -53,7 +52,7 @@
         sequence="10">
     </menuitem>
 
-    
+
     <menuitem
         id="menu_student_reclamation_prof"
         name="Reclamation Enseignant"
@@ -70,20 +69,19 @@
         action="action_student_event">
     </menuitem>
 
-    <menuitem 
-        id="menu_internship_offer" 
+    <menuitem
+        id="menu_internship_offer"
         name="Offre de Stage"
         parent="menu_student_portal_root"
         action="action_internship_offer">
     </menuitem>
 
-    <menuitem 
-        id="menu_job_offer" 
-        name="Offre d'emploi" 
-        parent="menu_student_portal_root" 
+    <menuitem
+        id="menu_job_offer"
+        name="Offre d'emploi"
+        parent="menu_student_portal_root"
         action="action_job_offer">
     </menuitem>
-
 
 
     <!-- //////////////////////////////////////////////////////////////////////////////////// -->
@@ -121,14 +119,23 @@
         sequence="10">
     </menuitem>
 
-     <menuitem 
-        id="menu_student_timing" 
-        name="Timings" 
+    <menuitem
+        id="menu_student_timing"
+        name="Timings"
         parent="menu_student_configuration"
         action="action_student_timing"
         sequence="10">
     </menuitem>
 
+    <menuitem
+        id="menu_student_salle"
+        name="Salle"
+        parent="menu_student_configuration"
+        action="action_student_salle"
+        sequence="10"
+    >
+
+    </menuitem>
 
 
 </odoo>

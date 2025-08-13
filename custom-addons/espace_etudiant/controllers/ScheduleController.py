@@ -32,6 +32,7 @@ class ScheduleController(http.Controller):
                     'matiere_id': [session.matiere_id.id, session.matiere_id.name],
                     'enseignant_id': [session.enseignant_id.id, session.enseignant_id.name],
                     'classe_id': [session.classe_id.id, session.classe_id.name],
+                    'salle_name': session.salle_id.name if session.salle_id else None,
                     'start_datetime': session.start_datetime.isoformat(),
                     'end_datetime': session.end_datetime.isoformat(),
                     'timing_id': [session.timing_id.id, session.timing_id.name],
@@ -45,3 +46,6 @@ class ScheduleController(http.Controller):
         except Exception as e:
             return Response(json.dumps({"error": str(e), "sessions": []}),
                          content_type='application/json')
+        
+        
+        

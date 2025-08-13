@@ -24,4 +24,5 @@ from . import timing
 from . import event
 from . import offre_emploi
 from . import offre_stage
+from . import salle
 

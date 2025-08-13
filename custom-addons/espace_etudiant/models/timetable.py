@@ -25,6 +25,7 @@ class OpSession(models.Model):
     matiere_id = fields.Many2one('student.matiere', 'Course', required=True)
     enseignant_id = fields.Many2one('student.enseignant', 'Faculty', required=True)
     classe_id = fields.Many2one('student.classe', 'Class', required=True)
+    salle_id = fields.Many2one('student.salle', 'Classroom', required=True, tracking=True)
     color = fields.Integer('Color Index')
     type = fields.Char(compute='_compute_day', string='Day', store=True)
     state = fields.Selection(
@@ -37,14 +38,15 @@ class OpSession(models.Model):
         for rec in self:
             rec.type = fields.Datetime.from_string(rec.start_datetime).strftime("%A")
 
-    @api.depends('enseignant_id', 'matiere_id', 'start_datetime', 'timing_id')
+    @api.depends('enseignant_id', 'matiere_id', 'start_datetime', 'timing_id', 'salle_id')
     def _compute_name(self):
         for session in self:
-            if session.enseignant_id and session.matiere_id and session.start_datetime and session.timing_id:
+            if session.enseignant_id and session.matiere_id and session.start_datetime and session.timing_id and session.salle_id:
                 session.name = (
                     f"{session.enseignant_id.name}:"
                     f"{session.matiere_id.name}:"
-                    f"{session.timing_id.name}"
+                    f"{session.timing_id.name}:"
+                    f"{session.salle_id.name}"
                 )
             else:
                 session.name = "Session"
@@ -62,12 +64,13 @@ class OpSession(models.Model):
             if rec.start_datetime > rec.end_datetime:
                 raise ValidationError(_('End Time cannot be before Start Time.'))
 
-    @api.constrains('enseignant_id', 'timing_id', 'start_datetime', 'classe_id', 'matiere_id')
+    @api.constrains('enseignant_id', 'timing_id', 'start_datetime', 'classe_id', 'matiere_id', 'salle_id')
     def check_timetable_conflicts(self):
         ICP = self.env['ir.config_parameter'].sudo()
         faculty_constraint = ICP.get_param('timetable.is_faculty_constraint')
         class_subject_constraint = ICP.get_param('timetable.is_batch_and_subject_constraint')
         class_only_constraint = ICP.get_param('timetable.is_batch_constraint')
+        room_constraint = ICP.get_param('timetable.is_room_constraint')
 
         for rec in self:
             conflicts = self.search([
@@ -86,3 +89,20 @@ class OpSession(models.Model):
 
                 if class_only_constraint and rec.classe_id == ses.classe_id:
                     raise ValidationError(_("This class already has a session at that time."))
+
+                if room_constraint and rec.salle_id == ses.salle_id:
+                    raise ValidationError(_("This classroom is already occupied at that time."))
+
+    @api.constrains('classe_id', 'salle_id')
+    def _check_classroom_capacity(self):
+        """Vérifier si la capacité de la salle est suffisante pour la classe"""
+        for rec in self:
+            if rec.salle_id and rec.classe_id and rec.salle_id.capacity:
+                # Supposons que la classe a un champ 'student_count' ou similaire
+                # Vous devrez adapter selon votre modèle de classe
+                if hasattr(rec.classe_id, 'student_count') and rec.classe_id.student_count > rec.salle_id.capacity:
+                    raise ValidationError(_(
+                        'The classroom "%s" has a capacity of %d students, '
+                        'but the class "%s" has %d students.'
+                    ) % (rec.salle_id.name, rec.salle_id.capacity, 
+                         rec.classe_id.name, rec.classe_id.student_count))

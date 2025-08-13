@@ -178,3 +178,142 @@ class AbsenceController(http.Controller):
             
         except Exception as e:
             return {"error": str(e)}
+    
+    
+    @http.route('/api/enseignant/etudiants', type='json', auth='user', methods=['POST'], csrf=False)
+    def get_etudiants_by_enseignant(self, **params):
+        try:
+            current_user = request.env.user
+            
+            # Trouver l'enseignant connecté
+            enseignant = request.env['student.enseignant'].sudo().search([
+                ('user_id', '=', current_user.id)
+            ], limit=1)
+            
+            if not enseignant:
+                return {"error": "Enseignant non trouvé pour cet utilisateur"}
+            
+            # Récupérer les classes de l'enseignant
+            classes = request.env['student.classe'].sudo().search([
+                ('enseignant_ids', 'in', [enseignant.id])
+            ])
+            
+            if not classes:
+                return {"error": "Aucune classe assignée à cet enseignant"}
+            
+            # Récupérer les étudiants de ces classes
+            etudiants = request.env['student.etudiant'].sudo().search([
+                ('classe_id', 'in', classes.ids)
+            ])
+            
+            result = []
+            for etudiant in etudiants:
+                result.append({
+                    'id': etudiant.id,
+                    'name': etudiant.first_name,
+                    'classe': etudiant.classe_id.name if etudiant.classe_id else '',
+                })
+            
+            return {
+                "status": "success",
+                "etudiants": result,
+                "enseignant_id": enseignant.id,
+                "enseignant_name": enseignant.name
+            }
+        
+        except Exception as e:
+            _logger.error("Erreur dans get_etudiants_by_enseignant: %s", str(e), exc_info=True)
+            return {"error": str(e)}
+    
+
+    
+    @http.route('/api/absences/bulk_create', type='json', auth='user', methods=['POST'], csrf=False)
+    def bulk_create_absences(self, **params):
+        try:
+            _logger.info("Absences reçues: %s", params)
+
+            absences_list = params.get('absences', [])
+            if not absences_list:
+                return {"error": "Aucune absence à enregistrer"}
+
+            current_user = request.env.user
+            enseignant = request.env['student.enseignant'].sudo().search([('user_id', '=', current_user.id)], limit=1)
+            if not enseignant:
+                enseignant = request.env['student.enseignant'].sudo().create({
+                    'name': current_user.name,
+                    'user_id': current_user.id
+                })
+
+            created_ids = []
+            for absence in absences_list:
+                etudiant_id = absence.get('etudiant_id')
+                heure_debut = self._parse_datetime(absence.get('heure_debut'))
+                heure_fin = self._parse_datetime(absence.get('heure_fin'))
+                justifiee = absence.get('justifiee', 'non_justifiee')
+                motif = absence.get('motif', '')
+
+                absence_rec = request.env['student.absence'].sudo().create({
+                    'etudiant_id': etudiant_id,
+                    'enseignant_id': enseignant.id,
+                    'heure_debut': heure_debut,
+                    'heure_fin': heure_fin,
+                    'justifiee': justifiee,
+                    'motif': motif
+                })
+                created_ids.append(absence_rec.id)
+
+            request.env.cr.commit()
+            return {"status": "success", "created_ids": created_ids}
+
+        except Exception as e:
+            request.env.cr.rollback()
+            _logger.error("Erreur bulk_create_absences: %s", str(e), exc_info=True)
+            return {"error": str(e)}
+    
+    @http.route('/api/enseignant/classes', type='http', auth='user', methods=['GET'], csrf=False)
+    def get_teacher_classes(self, **kwargs):
+            """
+            Retourne la liste des classes (id, name).
+            — Version simple: toutes les classes.
+            — Pour filtrer par enseignant: adaptez le domain si votre modèle le permet.
+            """
+            try:
+                Classe = request.env['student.classe'].sudo()
+
+                # 🔁 Version simple: toutes les classes
+                classes = Classe.search([])
+
+                # 🛠 Si vous avez un lien vers l'enseignant, vous pouvez filtrer:
+                # current_user = request.env.user
+                # enseignant = request.env['student.enseignant'].sudo().search([('user_id','=', current_user.id)], limit=1)
+                # if 'enseignant_id' in Classe._fields:
+                #     classes = Classe.search([('enseignant_id', '=', enseignant.id)])
+                # elif 'enseignant_ids' in Classe._fields:
+                #     classes = Classe.search([('enseignant_ids', 'in', [enseignant.id])])
+
+                data = [{'id': c.id, 'name': c.name} for c in classes]
+                return request.make_response(
+                    json.dumps(data),
+                    headers=[('Content-Type', 'application/json')]
+                )
+            except Exception as e:
+                _logger.error("Erreur get_teacher_classes: %s", str(e), exc_info=True)
+                return request.make_response(
+                    json.dumps({'error': str(e)}),
+                    headers=[('Content-Type', 'application/json')],
+                    status=500
+                )
+
+    @http.route('/api/classes/<int:classe_id>/students', 
+                type='http', auth='user', methods=['GET'], csrf=False)
+    def get_students_by_class(self, classe_id, **kwargs):
+        students = request.env['student.etudiant'].sudo().search([
+            ('classe_id', '=', classe_id),
+        ])
+
+        data = [{'id': s.id, 'name': s.partner_id.name} for s in students]
+
+        return request.make_response(
+            json.dumps(data),
+            headers=[('Content-Type', 'application/json')]
+        )

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ========================= KANBAN VIEW ========================= -->
+        <record model="ir.ui.view" id="view_student_kanban">
+            <field name="name">student.salle.kanban</field>
+            <field name="model">student.salle</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="name" />
+                    <field name="floor" />
+                    <field name="building" />
+                    <field name="capacity" />
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click o_kanban_record">
+                                <div class="oe_kanban_details">
+                                    <strong>
+                                        <field name="name" />
+                                    </strong>
+                                    <div>
+                                        <div>
+                                            <strong>Floor:</strong>
+                                            <field name="floor" />
+                                        </div>
+                                        <div>
+                                            <strong>Capacity:</strong>
+                                            <field name="capacity" />
+                                        </div>
+                                        <div>
+                                            <strong>Building:</strong>
+                                            <field name="building" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Tree View -->
+        <record id="view_salle_tree" model="ir.ui.view">
+            <field name="name">student.salle.tree</field>
+            <field name="model">student.salle</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="building" />
+                    <field name="floor" />
+                    <field name="capacity" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_salle_form" model="ir.ui.view">
+            <field name="name">student.salle.form</field>
+            <field name="model">student.salle</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" />
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="building" />
+                            <field name="floor" />
+                            <field name="capacity" />
+                            <field name="description" colspan="4" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_salle_search" model="ir.ui.view">
+            <field name="name">student.salle.search</field>
+            <field name="model">student.salle</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Room Name" />
+                    <field name="building" />
+                    <field name="floor" />
+                    <filter string="By Building" name="group_by_building"
+                        context="{'group_by':'building'}" />
+                </search>
+            </field>
+        </record>
+
+        <!-- Action and Menu Items -->
+        <record id="action_student_salle" model="ir.actions.act_window">
+            <field name="name">Classrooms</field>
+            <field name="res_model">student.salle</field>
+            <field name="view_mode">kanban,tree,form</field>
+        </record>
+    </data>
+</odoo>

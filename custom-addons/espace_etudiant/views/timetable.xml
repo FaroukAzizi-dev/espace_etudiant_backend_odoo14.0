@@ -12,6 +12,7 @@
                 <field name="enseignant_id" />
                 <field name="matiere_id" />
                 <field name="classe_id" />
+                <field name="salle_id" />
                 <field name="timing_id" />
                 <field name="start_datetime" />
                 <field name="end_datetime" />
@@ -66,6 +67,12 @@
                                         <div>
                                             <b>Class:</b>
                                             <field name="classe_id" />
+                                        </div>
+                                    </t>
+                                    <t t-if="record.salle_id.value">
+                                        <div>
+                                            <b>Classroom:</b>
+                                            <field name="salle_id" />
                                         </div>
                                     </t>
                                     <t t-if="record.start_datetime.value">
@@ -132,10 +139,34 @@
                         <field name="matiere_id" />
                         <field name="enseignant_id" />
                         <field name="classe_id" />
+                        <field name="salle_id" />
                         <field name="active" />
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
+        </field>
+    </record>
+
+    <!-- Tree view -->
+    <record id="view_student_session_tree" model="ir.ui.view">
+        <field name="name">student.session.tree</field>
+        <field name="model">student.session</field>
+        <field name="arch" type="xml">
+            <tree string="Sessions">
+                <field name="name" />
+                <field name="timing_id" />
+                <field name="start_datetime" />
+                <field name="end_datetime" />
+                <field name="enseignant_id" />
+                <field name="matiere_id" />
+                <field name="classe_id" />
+                <field name="salle_id" />
+                <field name="state" />
+            </tree>
         </field>
     </record>
 
@@ -149,8 +180,37 @@
                 <field name="name" />
                 <field name="matiere_id" />
                 <field name="classe_id" />
+                <field name="salle_id" />
                 <field name="state" />
             </calendar>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_student_session_search" model="ir.ui.view">
+        <field name="name">student.session.search</field>
+        <field name="model">student.session</field>
+        <field name="arch" type="xml">
+            <search string="Sessions">
+                <field name="name" />
+                <field name="enseignant_id" />
+                <field name="matiere_id" />
+                <field name="classe_id" />
+                <field name="salle_id" />
+                <field name="timing_id" />
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]" />
+                <filter name="confirmed" string="Confirmed" domain="[('state', '=', 'confirm')]" />
+                <filter name="done" string="Done" domain="[('state', '=', 'done')]" />
+                <separator />
+                <group expand="0" string="Group By">
+                    <filter string="Teacher" name="group_teacher" domain="[]" context="{'group_by': 'enseignant_id'}" />
+                    <filter string="Subject" name="group_subject" domain="[]" context="{'group_by': 'matiere_id'}" />
+                    <filter string="Class" name="group_class" domain="[]" context="{'group_by': 'classe_id'}" />
+                    <filter string="Classroom" name="group_classroom" domain="[]" context="{'group_by': 'salle_id'}" />
+                    <filter string="Day" name="group_day" domain="[]" context="{'group_by': 'type'}" />
+                    <filter string="Status" name="group_status" domain="[]" context="{'group_by': 'state'}" />
+                </group>
+            </search>
         </field>
     </record>
 
@@ -159,6 +219,7 @@
         <field name="name">Sessions</field>
         <field name="res_model">student.session</field>
         <field name="view_mode">tree,form,calendar,kanban</field>
+        <field name="search_view_id" ref="view_student_session_search" />
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Create the first session</p>
         </field>
@@ -175,8 +236,7 @@
                  ('enseignant_id.user_id', '=', user.id)]
             ]]>
         </field>
-        <field name="groups" eval="[(4, ref('base.group_user'))]" /> <!-- remplace par le groupe
-        étudiant spécifique si existant -->
+        <field name="groups" eval="[(4, ref('base.group_user'))]" />
     </record>
 
 </odoo>
